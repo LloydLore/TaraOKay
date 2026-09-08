@@ -10,7 +10,7 @@ description: >-
 ---
 # Threat Scenario Analysis -- Skill Workflow
 
-**Task complete when**: `data/ts.md` exists, every TS entry contains the required core fields, all AST-ID and DS-ID references resolve against `data/asset_list.md` and `data/ds.md`, every AFR includes all 5 factor scores whose sum matches the total, and `python skills/threat_scenario/tools/check_ts.py data/ts.md --asset-list data/asset_list.md --ds data/ds.md` exits 0.
+**Task complete when**: `data/ts.md` exists, every TS entry contains the required core fields, all AST-ID and DS-ID references resolve against `data/asset_list.md` and `data/ds.md`, every AFR includes all 5 factor scores whose sum matches the total, and the threat scenario validator exits 0.
 
 ## 1. When to Use This Skill
 
@@ -29,19 +29,21 @@ description: >-
 
 ---
 
-## 2. Repository Quick Reference
+## 2. Target Project Quick Reference
 
-Locate the repo root from the working directory -- do NOT hardcode paths.
+Locate the target project root from the working directory -- do NOT hardcode paths.
 
     data/
       ├── asset_list.md     INPUT: asset catalogue from `asset_analysis`
       ├── ds.md             INPUT: damage scenario catalogue from `damage_scenario`
       └── ts.md             OUTPUT: threat scenario catalogue
-    skills/threat_scenario/
+    skills/threat_scenario/ installed skill files
       ├── SKILL.md
       ├── assets/
       ├── references/
       └── tools/
+
+Path note: in this source repository, this skill lives at `threat_scenario/`. In an installed target project, it may live at `skills/threat_scenario/`.
 
 **Prerequisites**:
 - `data/asset_list.md` exists with at least one valid AST entry and CIA ratings
@@ -225,6 +227,8 @@ The template and schema reference define the exact field formatting.
 Run the validator. It is the authoritative checklist:
 
     python skills/threat_scenario/tools/check_ts.py data/ts.md --asset-list data/asset_list.md --ds data/ds.md
+
+From this source repository, use `python threat_scenario/tools/check_ts.py data/ts.md --asset-list data/asset_list.md --ds data/ds.md`.
 
 (From the skill directory use `python tools/check_ts.py /abs/path/data/ts.md --asset-list /abs/path/data/asset_list.md --ds /abs/path/data/ds.md`.) Any non-zero exit blocks handoff to `attack_tree` or `risk_treatment`.
 

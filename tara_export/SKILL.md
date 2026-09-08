@@ -42,12 +42,14 @@ Report generation is OUT OF SCOPE for this skill. Use this skill for export only
 
 ---
 
-## 2. Repository Quick Reference
+## 2. Target Project Quick Reference
 
-This skill applies to the **TaraAgent** project for automotive cybersecurity TARA work.
-Locate the repo root from the working directory -- do NOT hardcode any paths.
+This skill is part of the **TaraOK skill set** for automotive cybersecurity TARA work.
+Locate the target project root from the working directory -- do NOT hardcode any paths.
 
-**Key directories** (relative to repo root):
+Path note: in this source repository, this skill lives at `tara_export/`. In an installed target project, it may live at `skills/tara_export/`.
+
+**Runtime directories** (relative to the target project root):
 
 ```
 data/                                  SOURCE: Input data catalogues (6 files)
@@ -74,7 +76,7 @@ output/pdf/                            OUTPUT: Audience-specific PDFs
   ├── overall_report.pdf               Executive summary (reports/overall_report.md only)
   ├── traceability_report.pdf          Audit evidence (reports/traceability_report.md + CSG summary)
   └── multilayer_report.pdf            Technical review (reports/multilayer_report.md + threat data)
-skills/tara_export/                    This skill's files (workflow, templates, references)
+skills/tara_export/                    Installed skill files (workflow, templates, references)
   ├── SKILL.md                         This file (workflow guide)
   ├── assets/
   │   ├── CONF_PY_TEMPLATE.py          Sphinx configuration template
@@ -202,7 +204,7 @@ from pathlib import Path
 path = Path("docs/sphinx/conf.py")
 text = path.read_text()
 replacements = {
-    "{{PROJECT_NAME}}": "TaraAgent TARA Documentation",  # TODO: set actual project name
+    "{{PROJECT_NAME}}": "TaraOK TARA Documentation",     # TODO: set actual project name
     "{{COPYRIGHT_YEAR}}": "2026",                         # TODO: set current year
     "{{COPYRIGHT_HOLDER}}": "Automotive OEM Inc.",        # TODO: set actual company
     "{{AUTHOR_NAME}}": "Security Team",                   # TODO: set actual author/team

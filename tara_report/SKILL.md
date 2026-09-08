@@ -30,12 +30,14 @@ description: Generate three comprehensive TARA reports (Overall, Traceability, M
 
 ---
 
-## 2. Repository Quick Reference
+## 2. Target Project Quick Reference
 
-This skill applies to the **TaraAgent** project for automotive cybersecurity TARA work.
-Locate the repo root from the working directory -- do NOT hardcode any paths.
+This skill is part of the **TaraOK skill set** for automotive cybersecurity TARA work.
+Locate the target project root from the working directory -- do NOT hardcode any paths.
 
-**Key directories** (relative to repo root):
+Path note: in this source repository, this skill lives at `tara_report/`. In an installed target project, it may live at `skills/tara_report/`.
+
+**Runtime directories** (relative to the target project root):
 
 ```
 data/                                Input data catalogues (prerequisite)
@@ -49,7 +51,7 @@ reports/                             Output directory for generated reports (Mar
   ├── overall_report.md              Overall risk assessment (executive view)
   ├── traceability_report.md         Complete traceability matrix (audit view)
   └── multilayer_report.md           Domain-grouped analysis (technical view)
-skills/tara_report/                  This skill's files (references, templates)
+skills/tara_report/                  Installed skill files (references, templates)
   ├── SKILL.md                       This file (workflow guide)
   ├── assets/
   │   ├── OVERALL_REPORT_TEMPLATE.md          Template for Overall Report

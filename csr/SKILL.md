@@ -40,12 +40,14 @@ CSG derivation is OUT OF SCOPE for this skill. Use this skill for technical requ
 
 ---
 
-## 2. Repository Quick Reference
+## 2. Target Project Quick Reference
 
-This skill applies to the **TaraAgent** project for automotive cybersecurity TARA work.
-Locate the repo root from the working directory -- do NOT hardcode any paths.
+This skill is part of the **TaraOK skill set** for automotive cybersecurity TARA work.
+Locate the target project root from the working directory -- do NOT hardcode any paths.
 
-**Key directories** (relative to repo root):
+Path note: in this source repository, this skill lives at `csr/`. In an installed target project, it may live at `skills/csr/`.
+
+**Runtime directories** (relative to the target project root):
 
 ```
 data/                          Input and output directory
@@ -56,7 +58,7 @@ data/                          Input and output directory
   ├── rt.md                    INPUT: Risk treatment catalogue
   ├── csg.md                   INPUT: Cybersecurity goal catalogue
   └── csr.md                   OUTPUT: Cybersecurity requirement catalogue
-skills/csr/
+skills/csr/                    Installed skill files
   ├── SKILL.md                 This file (skill entry point)
   ├── assets/
   │   └── TEMPLATE.md          Minimal output template

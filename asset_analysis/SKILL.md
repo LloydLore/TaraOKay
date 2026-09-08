@@ -46,16 +46,18 @@ This skill is **one node** in the ISO 21434 TARA pipeline. Do NOT cross into sib
 
 ---
 
-## 2. Repository Quick Reference
+## 2. Target Project Quick Reference
 
-This skill applies to the **TaraAgent** project for automotive cybersecurity TARA work.
-Locate the repo root from the working directory -- do NOT hardcode any paths.
+This skill is part of the **TaraOK skill set** for automotive cybersecurity TARA work.
+Locate the target project root from the working directory -- do NOT hardcode any paths.
 
-**Key directories** (relative to repo root):
+Path note: in this source repository, this skill lives at `asset_analysis/`. In an installed target project, it may live at `skills/asset_analysis/`.
+
+**Runtime directories** (relative to the target project root):
 
     input/              Reference documents (specs, architecture diagrams, requirements)
     data/               Output directory (asset_list.md generated here)
-    skills/asset_analysis/  This skill's files (references, templates, examples)
+    skills/asset_analysis/  Installed skill files (references, templates, examples)
 
 **Workflow**:
 1. User places reference documents in `input/` (optional but recommended)

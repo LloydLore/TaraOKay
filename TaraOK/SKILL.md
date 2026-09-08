@@ -39,11 +39,28 @@ Use TaraOK when executing TARA for a specific vehicle or system. Use tara-maker 
 
 ---
 
-## 2. Repository Quick Reference
+## 2. Skill Source vs. Target Project Layout
 
-**Working Directory**: Project root (auto-detected, do NOT hardcode paths)
+This repository is the **TaraOK skill set source**. It does not need to contain a
+real `data/`, `reports/`, `_build/`, or `output/` directory. Those directories
+belong to the **target TARA project** where the skills are executed.
 
-**Key directories** (relative to repo root):
+**Skill source layout** (this repository):
+
+```
+TaraOK/                         # Master orchestration skill
+asset_analysis/                 # Phase 1 skill source
+damage_scenario/                # Phase 2 skill source
+threat_scenario/                # Phase 3 skill source
+attack_tree/                    # Phase 4 skill source
+risk_treatment/                 # Phase 5 skill source
+csg/                            # Phase 6 skill source
+csr/                            # Phase 7 skill source
+tara_report/                    # Phase 8 skill source
+tara_export/                    # Phase 9 skill source
+```
+
+**Target project layout** (runtime working directory, auto-detected):
 
 ```
 input/                          # Reference documents (optional but recommended)
@@ -75,6 +92,10 @@ references/                     # External standards and references
   ├── ISO-21434.pdf             # ISO 21434 standard (user-provided)
   └── workflow.md               # TARA methodology reference
 ```
+
+When a command mentions `skills/<skill-name>/`, it refers to an installed skill
+inside a target project. In this source repository, use the top-level skill
+directory name directly, for example `damage_scenario/tools/check_ds.py`.
 
 **Workflow Overview**:
 ```
@@ -293,7 +314,7 @@ TaraOK accepts reference documents in multiple formats:
 
 ---
 
-## 5. Prerequisite Validation
+## 5. Target Project Prerequisite Validation
 
 Before starting TARA execution, verify:
 
@@ -304,7 +325,7 @@ uv --version            # Repository-standard Python toolchain available
 pandoc --version        # 3.x
 sphinx-build --version  # 7.x
 
-# Project structure
+# Target project structure
 mkdir -p input/{architecture,requirements,reference} data reports docs/sphinx references _build/html output/pdf
 ```
 
@@ -389,7 +410,10 @@ done
 
 ---
 
-## 8. Success Criteria
+## 8. Runtime Success Criteria
+
+These criteria apply to a **target TARA project after TaraOK runs**. They are not
+requirements for this skill source repository.
 
 **Phase-Specific Success**:
 

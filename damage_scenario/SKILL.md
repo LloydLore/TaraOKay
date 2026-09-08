@@ -9,7 +9,7 @@ description: >-
 ---
 # Damage Scenario Analysis -- Skill Workflow
 
-**Task complete when**: `data/ds.md` exists, every `HIGH-CIA` asset (C≥3, I≥3, A≥3) in `data/asset_list.md` has been triaged into one or more DS entries, and `python skills/damage_scenario/tools/check_ds.py data/ds.md --asset-list data/asset_list.md` exits 0.
+**Task complete when**: `data/ds.md` exists, every `HIGH-CIA` asset (C≥3, I≥3, A≥3) in `data/asset_list.md` has been triaged into one or more DS entries, and the damage scenario validator exits 0.
 
 ## 1. When to Use
 
@@ -17,14 +17,16 @@ description: >-
 
 **OFF**: asset cataloguing (`asset_analysis`), threat/attack/feasibility (`threat_scenario`), security control implementation, generic ISO theory.
 
-## 2. Repository Layout
+## 2. Target Project Layout
 
-Locate the repo root from the working directory -- never hardcode paths.
+Locate the target project root from the working directory -- never hardcode paths.
 
     data/
       ├── asset_list.md     INPUT  (from asset_analysis skill)
       └── ds.md             OUTPUT (this skill)
-    skills/damage_scenario/ this skill
+    skills/damage_scenario/ installed skill files
+
+Path note: in this source repository, this skill lives at `damage_scenario/`. In an installed target project, it may live at `skills/damage_scenario/`.
 
 **Prerequisites**: `data/asset_list.md` exists with ≥1 asset entry and CIA ratings.
 **Fallback if missing**: stop and instruct the user to run the `asset_analysis` skill first; do not invent assets.
@@ -93,6 +95,8 @@ Copy `assets/TEMPLATE.md` per entry. The template defines all 7 required catalog
 Run the validator. It is the authoritative checklist:
 
     python skills/damage_scenario/tools/check_ds.py data/ds.md --asset-list data/asset_list.md
+
+From this source repository, use `python damage_scenario/tools/check_ds.py data/ds.md --asset-list data/asset_list.md`.
 
 (From the skill directory use `python tools/check_ds.py /abs/path/data/ds.md --asset-list /abs/path/data/asset_list.md`.) The validator enforces: DS-ID format and uniqueness, required body markers from the template, no threat/attack vocabulary in titles or final DS text, no `[TODO]/[TBD]` placeholders, SFOP scores in 1-4, Impact = MAX(SFOP), Overall Impact line consistent with per-dimension scores, and AST-ID cross-references resolve in the asset list. **Any non-zero exit blocks handoff to `threat_scenario`.**
 

@@ -19,16 +19,16 @@ description: >-
 
 ---
 
-## 2. Repository Layout
+## 2. Target Project Layout
 
-Locate the repo root from the working directory -- never hardcode paths.
+Locate the target project root from the working directory -- never hardcode paths.
 
     data/
       ├── asset_list.md     INPUT  (from asset_analysis)
       ├── ds.md             INPUT  (from damage_scenario)
       ├── ts.md             INPUT  (from threat_scenario, if available)
       └── at.md             OUTPUT (this skill)
-    skills/attack_tree/
+    skills/attack_tree/ installed skill files
       ├── references/
       │   ├── at-schema.md      Schema: 12 required fields
       │   ├── at-guide.md       Methodology: gates, AFR, patterns, pitfalls
@@ -37,6 +37,8 @@ Locate the repo root from the working directory -- never hardcode paths.
       │       └── example-02-can.md
       └── assets/
           └── TEMPLATE.md       Blank template + completed example
+
+Path note: in this source repository, this skill lives at `attack_tree/`. In an installed target project, it may live at `skills/attack_tree/`.
 
 **Prerequisites**:
 - `data/asset_list.md` exists (asset context)
