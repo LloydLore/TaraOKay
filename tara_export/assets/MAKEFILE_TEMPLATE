@@ -1,0 +1,31 @@
+SPHINXOPTS    ?=
+SPHINXBUILD   ?= sphinx-build
+SOURCEDIR     = docs/sphinx
+BUILDDIR      = _build
+
+.PHONY: help html latexpdf clean
+
+help:
+	@echo "Sphinx documentation build targets:"
+	@echo "  html       - Build HTML documentation"
+	@echo "  latexpdf   - Build PDF via LaTeX"
+	@echo "  clean      - Remove build artifacts"
+
+html:
+	@echo "Building HTML documentation..."
+	$(SPHINXBUILD) -M html "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS)
+	@echo "HTML output: $(BUILDDIR)/html/index.html"
+
+latexpdf:
+	@echo "Building PDF via LaTeX..."
+	$(SPHINXBUILD) -M latexpdf "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS)
+	@echo "PDF output: $(BUILDDIR)/latex/*.pdf"
+
+clean:
+	@echo "Cleaning build artifacts..."
+	@if [ -n "$(BUILDDIR)" ] && [ "$(BUILDDIR)" != "/" ] && [ -d "$(BUILDDIR)" ]; then \
+		rm -rf -- "$(BUILDDIR)"/*; \
+	else \
+		echo "Refusing to clean: BUILDDIR is empty, '/', or missing."; \
+	fi
+	@echo "Clean complete."

@@ -1,0 +1,49 @@
+\usepackage{geometry}
+\geometry{
+  a4paper,
+  left=25mm,
+  right=25mm,
+  top=30mm,
+  bottom=30mm,
+}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\nouppercase{\leftmark}}
+\fancyhead[R]{TARA Documentation}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  filecolor=magenta,
+  urlcolor=cyan,
+  bookmarks=true,
+  bookmarksopen=true,
+  bookmarksnumbered=true,
+}
+
+\usepackage{listings}
+\lstset{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny,
+  showstringspaces=false,
+}
+
+\usepackage{xcolor}
+\definecolor{codegray}{gray}{0.95}
+\lstset{backgroundcolor=\color{codegray}}
+
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+
+\setcounter{tocdepth}{3}
+\setcounter{secnumdepth}{3}
