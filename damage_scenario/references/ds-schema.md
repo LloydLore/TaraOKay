@@ -194,6 +194,8 @@ personal information, so privacy impact is negligible.
 **Example**:
 ```
 Assessment Context:
+- Affected Function / Function Cluster: Navigation route guidance and location services
+- Function Risk Statement: The vehicle continues to deliver navigation with privacy risk because location history can be observed by unauthorized parties
 - Assumptions: Location data is linked to driver accounts and stored for 90 days
 - Operating Conditions: Normal driving and parked states
 - Population / Scale: Fleet-scale exposure, 10,000+ users
@@ -202,6 +204,8 @@ Assessment Context:
 ```
 
 **Rules**:
+- Record the affected vehicle-level function or function cluster. If no function is affected, reconsider whether the DS is in scope.
+- Record the Function with RISK statement: what risky, unavailable, malformed, or privacy-invasive function reaches the road user or stakeholder.
 - Include architecture or stakeholder assumptions that materially affect scoring
 - Record operating conditions such as parked, low speed, highway, ADAS mode, charging, or service mode
 - Record affected population or fleet scale when Privacy or Financial scores depend on scale
@@ -286,6 +290,8 @@ Damage scenario candidates are prompted by analyzing what happens when an asset'
 Overall Impact: 4 (Critical) [max of S=1, F=3, O=1, P=4]
 
 **Assessment Context**:
+- Affected Function / Function Cluster: Navigation and location-based services
+- Function Risk Statement: The vehicle delivers location services with privacy risk because movement patterns can be exposed without authorization
 - Assumptions: Location data is linked to driver accounts and retained long enough to reveal movement patterns
 - Operating Conditions: Normal driving and parked states over an extended ownership period
 - Population / Scale: Fleet-scale exposure, potentially 10,000+ users
@@ -326,7 +332,7 @@ activities.
 | Linked Assets | List of AST-IDs | AST-ECU-001, AST-SNS-001, AST-DAT-001 |
 | SFOP Dimensions | S/F/O/P with Yes/No and brief explanation | Safety: No, Financial: Yes, Operational: No, Privacy: Yes |
 | Impact Score | 1-4 (Negligible, Moderate, Severe, Critical) | 4 (Critical) |
-| Assessment Context | Assumptions, operating context, scale, duration, evidence | Fleet-scale continuous tracking; GNSS + telematics assets |
+| Assessment Context | Affected function, Function with RISK, assumptions, operating context, scale, duration, evidence | Navigation/location services delivered with privacy risk; fleet-scale tracking |
 | Rationale | Detailed justification (2-3 sentences per dimension) | Privacy (4 - Critical): Continuous tracking... |
 
 ---
@@ -341,7 +347,7 @@ Before finalizing a damage scenario entry, verify:
 - [ ] Title is clear, concise, and under 80 characters
 - [ ] Title describes the HARM (not the attack method)
 - [ ] Linked Assets lists all relevant AST-IDs from `data/asset_list.md`
-- [ ] Assessment Context records assumptions, operating conditions, scale, duration/recoverability, and evidence/source
+- [ ] Assessment Context records affected function, Function with RISK, assumptions, operating conditions, scale, duration/recoverability, and evidence/source
 - [ ] All four SFOP dimensions are assessed (Yes/No with justification)
 - [ ] Impact Score is 1-4 and equals the MAX of individual SFOP scores
 - [ ] Rationale provides 2-3 sentences for EACH affected SFOP dimension

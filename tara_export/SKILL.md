@@ -210,14 +210,14 @@ replacements = {
     "{{AUTHOR_NAME}}": "Security Team",                   # TODO: set actual author/team
     "{{VERSION}}": "1.0",
     "{{RELEASE}}": "1.0.0",
-    "{{REPOSITORY_URL}}": "https://github.com/example/tara-agent",  # TODO: set actual repo URL
+    "{{REPOSITORY_URL}}": "https://github.com/example/taraok",       # TODO: set actual repo URL
     "{{HTML_TITLE}}": "TARA Documentation",
     "{{HTML_SHORT_TITLE}}": "TARA",
     "{{LATEX_PREAMBLE_FILE}}": "../../skills/tara_export/assets/LATEX_PREAMBLE.tex",
     "{{PDF_FILENAME}}": "tara_complete",
     "{{PDF_TITLE}}": "TARA Complete Archive",
     "{{PDF_AUTHOR}}": "Security Team",                    # TODO: set actual author/team
-    "{{PROJECT_SLUG}}": "tara-agent",                     # TODO: set actual slug
+    "{{PROJECT_SLUG}}": "taraok",                        # TODO: set actual slug
     "{{PROJECT_DESCRIPTION}}": "Automotive Cybersecurity TARA",
 }
 for old, new in replacements.items():

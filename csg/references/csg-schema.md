@@ -96,6 +96,24 @@ CSG-CAN-02  ← Second CAN bus CSG
 
 ---
 
+### Optional Goal Context
+
+CSG entries may include these fields when OEM and supplier/component viewpoints
+must be aligned. They do not replace any of the 9 required fields.
+
+```markdown
+**Goal Viewpoint**: OEM vehicle-level | Tier 1/component-level
+**Parent Vehicle-Level Goal**: [CSG-ID or N/A for a vehicle-level goal]
+```
+
+Rules:
+- Use `OEM vehicle-level` for the goal that protects a function delivered by the item.
+- Use `Tier 1/component-level` only when a narrower allocation is needed.
+- Component-level goals must name their parent vehicle-level goal or explain why no parent exists.
+- Keep one CIA property per goal at both viewpoints.
+
+---
+
 ### 3. Related DS-IDs
 
 **Format**: List of Damage Scenario IDs from DS catalogue (one per line)

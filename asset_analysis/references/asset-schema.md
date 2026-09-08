@@ -4,6 +4,24 @@ This document defines the required fields for asset identification in ISO 21434 
 
 ---
 
+## Item / Component / Asset Modeling Policy
+
+TARA starts from the item definition. In this skill set, `data/asset_list.md`
+owns the item-definition header and the asset catalogue in one file; it does not
+require a separate `function.md` or `component.md` file.
+
+- **Item / TOE**: the component or set of components that implements one or more vehicle-level functions.
+- **Vehicle-Level Function**: the function delivered to road users or stakeholders. Damage scenarios later describe how this function is delivered with risk.
+- **Component**: a logical or technical part of the item. Record component boundaries in the item-definition header and in `Related Systems`.
+- **Asset**: something inside or across components that has cybersecurity value. Do not list every component as an asset unless it needs protection or creates attack surface.
+
+Component-like objects may be represented as assets when the component itself
+needs protection, provides a trust boundary, stores sensitive data, exposes an
+interface, or controls a safety/security-relevant function. Otherwise, keep the
+component as context rather than creating an AST entry.
+
+---
+
 ## Required Fields
 
 Every asset in the asset catalogue must include ALL 7 required fields:
@@ -213,6 +231,8 @@ Related Systems:
 - Identify dependents (what depends on this asset)
 - Note security relationships (authentication, encryption, trust boundaries)
 - Note safety relationships (impact on safety functions)
+- Note component containment when known (which component contains or owns this asset)
+- Note vehicle-level function contribution when this asset directly supports a function
 - Reference other assets by their Asset ID when possible
 
 ---
@@ -350,4 +370,6 @@ Before finalizing an asset entry, verify:
 - [ ] CIA Rating justification is documented
 - [ ] Interfaces lists ALL connection points (internal and external)
 - [ ] Related Systems identifies dependencies and dependents
+- [ ] Related Systems identifies component containment or explicitly marks it unknown
+- [ ] Vehicle-level function contribution is documented when the asset directly supports a function
 - [ ] No placeholder text remains (e.g., [TODO], [TBD])

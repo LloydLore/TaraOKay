@@ -119,12 +119,13 @@ Document existing security controls already evidenced by design documentation.
 For each implemented control, capture:
 - what is implemented,
 - where it is documented,
+- which item, component, layer, or interface owns the control,
 - which CSG(s) it supports.
 
 Use the Part A structure from `assets/TEMPLATE.md`.
 Use the exact field requirements from `references/csr-schema.md`.
 
-→ verify: every Part A entry has a source reference. Related CSG-IDs are recommended, but may be added later during traceability mapping per `references/csr-schema.md`.
+→ verify: every Part A entry has a source reference and allocation target. Related CSG-IDs are recommended, but may be added later during traceability mapping per `references/csr-schema.md`.
 
 ### Step 3: Derive Required Technical Controls
 
@@ -138,10 +139,11 @@ Use `references/csr-guide.md` for:
 Working rule:
 - CSG answers **WHAT must be protected**.
 - CSR answers **HOW this implementation will protect it**.
+- Every CSR states **WHERE** the control is allocated: Item, Component, layer, interface, or supplier-owned subsystem.
 
 One CSG commonly produces multiple CSRs across different functional categories.
 
-→ verify: every in-scope CSG that requires implementation has at least one derived CSR; each CSR is specific and testable.
+→ verify: every in-scope CSG that requires implementation has at least one derived CSR; each CSR is specific, allocated, and testable.
 
 ### Step 4: Classify Each CSR Outcome
 

@@ -11,6 +11,7 @@ This guide provides methodology for deriving cybersecurity goals in ISO 21434 TA
 **Key Characteristics**:
 - Derived FROM damage scenarios (not threat scenarios)
 - Expressed as SHALL statements (normative requirements)
+- Anchored to the vehicle-level function and item boundary captured during item definition
 - Assigned exactly one CIA property per CSG (Confidentiality, Integrity, or Availability)
 - Technology-agnostic (HOW is defined later in cybersecurity requirements)
 - Must be verifiable at integration/validation stage
@@ -30,6 +31,23 @@ Risk Treatment Decision (RT-*)
 
 ---
 
+## Goal Granularity Policy
+
+Cybersecurity goals are not the center of the concept model. They are derived
+objectives created after damage and treatment context is known.
+
+- **Vehicle-level goal**: use when the goal protects a function delivered by the item to road users or stakeholders.
+- **Component-level goal**: use only when a supplier/component boundary needs a more local objective.
+- **Parent alignment**: every component-level goal must state which vehicle-level goal or affected function it supports.
+- **One CIA property per goal**: split goals when integrity, availability, and confidentiality need separate verification.
+- **No implementation detail**: algorithms, key sizes, products, and test procedures belong in CSR.
+
+When OEM and Tier 1 viewpoints differ, keep the vehicle-level goal as the parent
+and express the component-level goal as a narrower child objective. Do not create
+parallel goals with no parent relationship.
+
+---
+
 ## The 5-Step Derivation Methodology
 
 ### Step 1: Read Damage Scenario → Identify Impact Dimensions
@@ -39,8 +57,9 @@ Risk Treatment Decision (RT-*)
 **Process**:
 1. Locate the damage scenario file (e.g., `data/ds.md`)
 2. Read the **SFOP Dimensions Affected** section
-3. Identify which dimension(s) have scores ≥ 2 (Moderate or higher)
-4. Note the **rationale** explaining WHY each dimension is affected
+3. Read the affected function and Function with RISK in **Assessment Context**
+4. Identify which dimension(s) have scores ≥ 2 (Moderate or higher)
+5. Note the **rationale** explaining WHY each dimension is affected
 
 **Example**: DS-IVI-001 [EXAMPLE] "Unauthorized Driver Location Tracking"
 - **Safety**: 1 (Negligible) - ❌ Not a goal driver
@@ -168,6 +187,7 @@ Before finalizing a goal statement, verify:
 
 - ✅ **Uses "shall" (normative requirement)**: "The system shall..." not "The system should..."
 - ✅ **Identifies specific component/system**: "The head unit" not "The vehicle"
+- ✅ **Names the protected function or asset**: goal links back to affected function or DS context
 - ✅ **States WHAT, not HOW**: "authenticate requests" not "use OAuth 2.0"
 - ✅ **Addresses the damage scenario**: Clear link between goal and harm being prevented
 - ✅ **Verifiable**: Can test whether goal is achieved (measurable)
@@ -284,6 +304,7 @@ Before finalizing a goal statement, verify:
 **Key Distinction**: 
 - **Cybersecurity Goal (CSG)** = Active mitigation (`Avoid`, `Reduce`, and mitigation-bearing `Transfer` treatments)
 - **Cybersecurity Claim** = Residual-risk or responsibility documentation owned by `data/rt.md`
+- **CSR allocation** = Item or component location where the goal becomes implementable
 
 ---
 

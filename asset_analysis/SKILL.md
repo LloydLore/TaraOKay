@@ -25,6 +25,21 @@ This skill is **one node** in the ISO 21434 TARA pipeline. Do NOT cross into sib
 - User asks "what assets exist / what is in scope" → **stay here**.
 - If the asset list is missing or incomplete and the user jumps to threats/damage, complete asset_analysis first as prerequisite.
 
+### Item Definition Gate (mandatory)
+
+Before enumerating assets, freeze the item boundary. ISO 21434 TARA starts from
+item definition: an item is a component or set of components that implements a
+vehicle-level function.
+
+Record these at the top of `data/asset_list.md`:
+1. **Item / TOE** — the system, subsystem, or ECU set under analysis.
+2. **Vehicle-Level Function(s)** — functions delivered to road users or stakeholders.
+3. **Constituent Components** — logical or technical parts that implement the item.
+4. **Asset Location** — which assets live inside or across those components.
+
+If the item cannot be described as “these components implement these
+vehicle-level functions,” stop and clarify. Do not start asset enumeration.
+
 ---
 
 ## 1. When to Use This Skill
@@ -39,7 +54,7 @@ This skill is **one node** in the ISO 21434 TARA pipeline. Do NOT cross into sib
 - Analyzing vehicle system architecture for security-relevant components
 
 **Trigger OFF** when the user asks:
-- About threat scenarios, attack paths, or risk assessment (use tara-maker skill instead)
+- About threat scenarios or attack paths (route to `threat_scenario`); about risk treatment (route to `risk_treatment`)
 - General ISO 21434 theory unrelated to this specific project
 - Vehicle design or engineering topics not related to cybersecurity asset identification
 - Implementation of security controls (that comes after asset identification)
@@ -61,19 +76,22 @@ Path note: in this source repository, this skill lives at `asset_analysis/`. In 
 
 **Workflow**:
 1. User places reference documents in `input/` (optional but recommended)
-2. Skill guides user through asset identification interview
-3. Output written to `data/asset_list.md` in ISO 21434 format
+2. Skill freezes item/function/component boundary
+3. Skill guides user through asset identification interview
+4. Output written to `data/asset_list.md` in ISO 21434 format
 
 ### Prerequisites (before interview)
 
-- Confirm target scope is explicit (vehicle / subsystem / ECU boundary)
+- Confirm target item scope is explicit (vehicle / subsystem / ECU boundary)
+- Confirm vehicle-level function(s) implemented by the item
+- Confirm constituent components, or record unknowns explicitly
 - Confirm at least one evidence source exists:
   - user-provided architecture/network description, and/or
   - documents in `input/`
 - Create `data/` if missing; final output path is strictly `data/asset_list.md`
 - If evidence is insufficient, mark unknowns explicitly (do **not** infer/fabricate)
 
-### TOE / Scope Definition (mandatory before Step 1)
+### TOE / Scope Definition (mandatory before asset enumeration)
 
 Before any asset is enumerated, the **Target of Evaluation (TOE)** must be written down explicitly at the top of `data/asset_list.md`. Without a frozen TOE, asset identification has no boundary and damage/threat downstream becomes incomparable.
 
@@ -88,6 +106,8 @@ Record three things:
    - Components owned by other TARAs (cite the other TARA if known)
 3. **Assumptions on the environment** — what the TOE relies on but does not control
    - Trusted external services, physical access controls, supplier-provided components treated as black boxes
+4. **Vehicle-Level Function(s)** — what the item delivers to road users or stakeholders
+5. **Constituent Components** — which logical or technical parts implement the item
 
 **Rule**: external entities (out-of-scope systems the TOE talks to) are NOT assets. They appear only in the `Interfaces` field of in-scope assets. Adding them as `AST-*` entries pollutes the asset list and double-counts in damage/threat steps.
 
@@ -101,12 +121,13 @@ Follow these steps to identify and document vehicle assets:
 
 ### Step 1: Gather Context
 - Review any documents in `input/` directory (system specs, architecture diagrams, requirements)
-- Understand the vehicle system or component being analyzed
-- Identify the scope (whole vehicle, specific ECU, subsystem, etc.)
+- Understand the item and the vehicle-level function(s) it implements
+- Identify the scope (whole vehicle, specific ECU, subsystem, etc.) and constituent components
 
 ### Step 2: Conduct User Interview
 Use the guided questions in Section 4 to extract asset information from the user.
 Take detailed notes on:
+- Item boundary and vehicle-level function(s)
 - System components and their functions
 - Network architecture and connections
 - Data flows (what data goes where)
@@ -291,6 +312,14 @@ The output file `data/asset_list.md` should follow this structure:
 **Scope**: [Description of system analyzed]  
 **Total Assets**: [N]
 
+## Item Definition
+
+- **Item / TOE**: [System, subsystem, or ECU set under analysis]
+- **Vehicle-Level Function(s)**: [Functions delivered to road users or stakeholders]
+- **Constituent Components**: [Logical or technical parts that implement the item]
+- **Out-of-Scope Components**: [Adjacent systems treated as external entities]
+- **Assumptions**: [Boundary, lifecycle, supplier, or environment assumptions]
+
 ---
 
 ## Asset Summary by Category
@@ -368,6 +397,7 @@ The output file `data/asset_list.md` should follow this structure:
 MUST NOT:
 - **Invent or fabricate asset information** -- All asset data must come from user input, reference documents, or explicit analysis. Do not make up technical details.
 - **Add asset categories beyond the 7 defined** -- Only use: ECU, Gateway, Sensor, Actuator, Communication, Data, Interface. Do not create custom categories.
+- **Skip item definition** -- The item/TOE, vehicle-level function(s), and constituent components must be recorded before asset entries.
 - **Assign CIA ratings without justification** -- Every CIA rating must be based on explicit impact analysis. Document the reasoning.
 - **Hide uncertainty** -- If evidence is missing, explicitly record Unknown/Assumption instead of guessing.
 - **Create files outside `skills/` and `data/` directories** -- Keep project structure clean. Output goes to `data/asset_list.md` only.
@@ -396,10 +426,10 @@ For practical examples of how to apply this workflow, see the example scenarios 
 
 ## ISO 21434 Context
 
-This skill implements **ISO/SAE 21434:2021 Clause 15.3 - Asset Identification**.
+This skill implements the item-definition gate and **ISO/SAE 21434:2021 Clause 15.3 - Asset Identification**.
 
-Asset identification is the first step in the TARA process:
-1. **Asset Identification** ← This skill
+Asset identification starts after the item and vehicle-level function boundary is frozen:
+1. **Item Definition + Asset Identification** ← This skill
 2. Damage Scenario Definition
 3. Threat Scenario Identification
 4. Attack Feasibility Rating

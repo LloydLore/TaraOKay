@@ -38,17 +38,18 @@ These rules apply everywhere in this skill -- the workflow steps, validator, and
 1. **Consequence, not cause.** A damage scenario describes the HARM. How an attacker causes it is `threat_scenario` territory. Forbidden vocabulary in titles or final DS entries: attack, attacker, exploit, vulnerability, injection, spoofing, malware, ransomware, dos/ddos, denial of service, cve.
 2. **SFOP scale is 1-4.** Negligible=1, Moderate=2, Severe=3, Critical=4. There is no level 0. No AFR/likelihood here.
 3. **Impact Score = MAX(Safety, Financial, Operational, Privacy).** Not average, not sum.
-4. **CIA ratings are triage prompts, not scores.** High C → ask Privacy/Financial. High I → ask Safety/Operational. High A → ask Operational/Safety. F is always assessed independently. Final SFOP scores must be justified from operating context, population, duration, recovery path, and regulatory scope -- never copied from CIA.
-5. **DS-ID format**: `DS-[DOMAIN]-[NNN]`, unique. The 7 allowed domain codes are: `CAN, OTA, EXT, BCK, IVI, IMM, ADAS`. No custom domains.
-6. **Many-to-many**: one DS may link multiple assets; one asset may appear in multiple DS entries.
-7. **Worst-case reasonable**, not theoretical extreme. Anchor every score in operating conditions (parked vs. highway), scale (one vehicle vs. fleet), duration (auto-recover vs. service center), and regulation (GDPR, GB 44495, UN R155, ISO 26262).
-8. **Every score > 1 needs 2-3 sentences of rationale.** Every entry needs Assessment Context that lets a reviewer reproduce the scoring.
+4. **Function with RISK**: The delivered harm reaches the road user or stakeholder through a vehicle-level function. Each DS must identify the affected function or function cluster.
+5. **CIA ratings are triage prompts, not scores.** High C → ask Privacy/Financial. High I → ask Safety/Operational. High A → ask Operational/Safety. F is always assessed independently. Final SFOP scores must be justified from operating context, population, duration, recovery path, and regulatory scope -- never copied from CIA.
+6. **DS-ID format**: `DS-[DOMAIN]-[NNN]`, unique. The 7 allowed domain codes are: `CAN, OTA, EXT, BCK, IVI, IMM, ADAS`. No custom domains.
+7. **Many-to-many**: one DS may link multiple assets; one asset may appear in multiple DS entries.
+8. **Worst-case reasonable**, not theoretical extreme. Anchor every score in operating conditions (parked vs. highway), scale (one vehicle vs. fleet), duration (auto-recover vs. service center), and regulation (GDPR, GB 44495, UN R155, ISO 26262).
+9. **Every score > 1 needs 2-3 sentences of rationale.** Every entry needs Assessment Context that lets a reviewer reproduce the scoring.
 
 ## 4. Workflow
 
 ### Step 1 -- Read assets
 
-Open `data/asset_list.md`. Build a working list grouped by highest CIA dimension; flag everything with C≥3, I≥3, or A≥3 as a triage candidate.
+Open `data/asset_list.md`. Read the Item Definition section first, then build a working list grouped by highest CIA dimension. Flag everything with C≥3, I≥3, or A≥3 as a triage candidate.
 
 ### Step 2 -- Group by domain
 
@@ -66,7 +67,7 @@ Assign each asset its PRIMARY domain from the 7 allowed codes (Rule 5). An asset
 
 ### Step 3 -- Triage candidate damages (CIA → SFOP)
 
-For each HIGH-CIA asset, generate harm prompts using Rule 4. Patterns in `references/ds-patterns.md` (12 reusable templates) are a good seed list.
+For each HIGH-CIA asset, generate harm prompts using Rules 4-5. Patterns in `references/ds-patterns.md` (12 reusable templates) are a good seed list.
 
 Example:
 ```
@@ -78,7 +79,7 @@ AST-ECU-001 (Head Unit) -- CIA C:3 / I:4 / A:3
 
 ### Step 4 -- Refine with the user (interview)
 
-Use the SFOP interview questions in `references/interview-questions.md` (16 questions across S/F/O/P) to pin down each candidate. Confirm realism, set scores, capture rationale, list every contributing asset.
+Use the SFOP interview questions in `references/interview-questions.md` (16 questions across S/F/O/P) to pin down each candidate. Confirm realism, set scores, capture rationale, list every contributing asset. For each candidate, also ask: “Which vehicle-level function becomes risky, unavailable, malformed, or privacy-invasive?” If no function is affected, the DS is likely not in scope.
 
 **No-human-in-loop fallback**: see `references/interview-questions.md` § "Fallback". Mark every assumed answer in **Assessment Context** with `(assumed: ...)`, cap scores that depend on unverified assumptions one level below worst case, and add a final `## Open Questions` section to `data/ds.md`.
 
@@ -103,6 +104,8 @@ From this source repository, use `python damage_scenario/tools/check_ds.py data/
 Manual checks the validator cannot perform (review by eye before handoff):
 
 - Every HIGH-CIA asset from Step 1 is represented in at least one DS entry.
+- Every DS names the affected vehicle-level function or function cluster.
+- Every DS states the Function with RISK delivered to the road user or stakeholder.
 - Rationale text is consistent with the assigned scores.
 - Assessment Context is detailed enough that another reviewer could reproduce the scoring.
 - Similar damages have similar SFOP scores across the catalogue.

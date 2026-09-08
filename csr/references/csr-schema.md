@@ -13,6 +13,7 @@ Cybersecurity Requirements (CSRs) represent specific technical controls derived 
 **Key Characteristics**:
 - CSRs are formulated as **specific technical controls** with implementation details
 - Each CSR implements one or more CSGs (M:N relationship)
+- Each CSR is allocated to an item or component so implementation ownership is auditable
 - CSRs focus on **how** to protect, not **what** to protect (inverse of CSG)
 - CSRs are technology-specific and implementation-dependent
 - CSRs exist in two forms: **Part A (Implemented Controls)** and **Part B (Identified Gaps)**
@@ -36,6 +37,8 @@ CSR catalogue contains TWO distinct entry types:
 
 **Purpose**: Document existing security controls already implemented in the system
 
+**Allocation Rule**: Every Part A entry must identify where the control is implemented. Use the `Source` or `Description` field to state the item, component, layer, or interface that owns the control.
+
 **Fields** (7 total):
 1. CSR-ID
 2. Title (derived from Description or Section heading)
@@ -54,6 +57,8 @@ CSR catalogue contains TWO distinct entry types:
 **Source**: TARA analysis, threat scenario mitigation, CSG decomposition
 
 **Purpose**: Identify missing or incomplete security controls requiring implementation
+
+**Allocation Rule**: Every Part B entry must identify where the missing control should be implemented. The `Recommendation` field must include the component, layer, interface, or item that owns the fix.
 
 **Fields** (9 total):
 1. CSR-ID
@@ -170,6 +175,22 @@ CSR-COMMS-15   ← Fifteenth communication control (SecOC)
 - `[功能] + [安全机制]` - "证书 + 加载和存储"
 - `[系统] + [防护措施]` - "内部网络 + 区域划分"
 - `[通信协议] + [安全要求]` - "CAN/CANFD + 通信认证"
+
+---
+
+### Optional Allocation Target
+
+Add this context field to every CSR when allocation is known:
+
+```markdown
+**Allocation Target**: [Item | Component | Layer | Interface | Supplier-owned subsystem]
+```
+
+Rules:
+- Part A entries must identify where implemented control exists through this field, `Source`, or `Description`.
+- Part B entries must identify where missing control belongs through this field or `Recommendation`.
+- Use `Item` for vehicle-level allocation and `Component` for narrower supplier or subsystem allocation.
+- Do not use allocation target to replace `Related CSG-IDs` or `Identified By` traceability.
 
 ---
 
@@ -330,6 +351,7 @@ WiFi:启用动态黑名单与速率限制功能。当检测到同一源IP在短�
 - For supplier-provided controls: Reference supplier documentation
 - For component-level controls: Reference component datasheets
 - Every IMPLEMENTED control MUST have a Source reference
+- Source or Description must identify the allocation target: Item, Component, layer, interface, or supplier-owned subsystem
 
 **Source Types**:
 
@@ -765,6 +787,7 @@ cryptographic metadata binding.
 
 3. WHERE: Deploy in [COMPONENT/LAYER]
    - Architecture location, system boundary
+   - Allocation target: Item, Component, layer, interface, or supplier-owned subsystem
 
 4. VERIFY: Test via [VALIDATION METHOD]
    - Acceptance criteria, test cases, success metrics

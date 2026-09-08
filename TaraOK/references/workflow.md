@@ -14,8 +14,8 @@ This document outlines the complete **Threat Analysis and Risk Assessment (TARA)
 ## 9-Phase Workflow Architecture
 
 ```
-Phase 1: Asset Analysis                      [Clause 15.3]
-         ↓ (produces data/asset_list.md)
+Phase 1: Item Definition + Asset Analysis    [Clause 9.3 / 15.3]
+         ↓ (freezes item/function/component boundary, produces data/asset_list.md)
 Phase 2: Damage Scenario Analysis            [Clause 15.4-15.5]
          ↓ (produces data/ds.md with SFOP Impact scores)
 Phase 3: Threat Scenario Enumeration         [Clause 15.6]
@@ -39,19 +39,21 @@ Phase 9: TARA Documentation Export           [Clause 8.4]
 
 ## Phase Details
 
-### Phase 1: Asset Analysis (Clause 15.3)
+### Phase 1: Item Definition + Asset Analysis (Clause 9.3 / 15.3)
 **Skill**: `asset_analysis`  
 **Input**: Vehicle system architecture, network diagrams, software inventory  
-**Output**: `data/asset_list.md` — Comprehensive inventory of all security-relevant assets
+**Output**: `data/asset_list.md` — Item/function boundary plus comprehensive inventory of all security-relevant assets
 
 **Methodology**:
+- Define the item / TOE and the vehicle-level function(s) it implements
+- Record constituent components and item boundary assumptions
 - Identify hardware assets (ECUs, sensors, infotainment systems, communication bus, connectors)
 - Identify software assets (firmware, applications, libraries, protocols)
 - Identify data assets (vehicle telemetry, user PII, diagnostic information)
 - Document asset boundaries, communication interfaces, and trust levels
 - Assign unique asset identifiers (AST-DOMAIN-NNN)
 
-**ISO 21434 Requirement**: Complete identification of all items that could be subject to threats must be documented with sufficient technical detail for threat modelers to reason about attack surfaces.
+**ISO 21434 Requirement**: Define the item and its vehicle-level function before documenting components and assets subject to threats. Record sufficient technical detail for threat modelers to reason about attack surfaces.
 
 ---
 
@@ -62,6 +64,8 @@ Phase 9: TARA Documentation Export           [Clause 8.4]
 
 **Methodology**:
 Damage scenarios describe adverse outcomes if assets are compromised. Each damage scenario receives an **Impact Score (1-4)** derived from **SFOP scale**:
+- Each damage scenario identifies the affected vehicle-level function or function cluster
+- Each damage scenario states the Function with RISK delivered to the road user or stakeholder
 
 **SFOP Scale**:
 - **Safety (S)**: Impacts vehicle occupants/pedestrians (injury, death)
@@ -270,6 +274,7 @@ Cybersecurity requirements translate cybersecurity goals into specific, testable
 4. Perform gap analysis — compare required CSRs against implemented controls
 5. Prioritize gaps by Risk Value (CRITICAL/HIGH/MEDIUM/LOW) using `data/rt.md`
 6. Document traceability: CSR → CSG → RT → TS → DS → Asset
+7. Document allocation target: Item, Component, layer, interface, or supplier-owned subsystem
 
 **CSR Structure**:
 ```
@@ -347,11 +352,11 @@ CSR-[CATEGORY]-[NN]: [Requirement Name]
 TARA Workflow Dependency Graph
 ================================
 
- ┌─ Phase 1: Asset Analysis
- │  └─ Prerequisite: Vehicle architecture, system specs
+ ┌─ Phase 1: Item Definition + Asset Analysis
+ │  └─ Prerequisite: Vehicle architecture, system specs, vehicle-level functions
  │
  └─→ Phase 2: Damage Scenario Analysis
-    │  Needs: Asset inventory (Phase 1 output)
+    │  Needs: Item boundary, vehicle-level functions, asset inventory (Phase 1 output)
     │  Prerequisite: Business impact assessment, safety standards
     │
     └─→ Phase 3: Threat Scenario Enumeration
@@ -400,7 +405,7 @@ TARA Workflow Dependency Graph
 
 | Clause | Topic | TARA Phase | Work Product |
 |--------|-------|-----------|--------------|
-| 15.3 | Asset identification | Phase 1 | `data/asset_list.md` |
+| 9.3 / 15.3 | Item definition and asset identification | Phase 1 | `data/asset_list.md` |
 | 15.4-15.5 | Damage scenario analysis | Phase 2 | `data/ds.md` |
 | 15.6 | Threat scenario identification | Phase 3 | `data/ts.md` |
 | 15.7 | Attack tree analysis | Phase 4 | `data/at.md` |
@@ -428,8 +433,8 @@ The TARA workflow integrates multiple security frameworks:
 
 Use this checklist to verify TARA workflow completeness:
 
-- [ ] Phase 1: All vehicle assets inventoried with identifiers (AST-DOMAIN-NNN)
-- [ ] Phase 2: All damage scenarios linked to assets with SFOP impact scores
+- [ ] Phase 1: Item/function/component boundary documented; all vehicle assets inventoried with identifiers (AST-DOMAIN-NNN)
+- [ ] Phase 2: All damage scenarios identify affected functions, link to assets, and include SFOP impact scores
 - [ ] Phase 3: All threat scenarios enumerated with AFR calculations (0-15 points)
 - [ ] Phase 4: Attack trees (if applicable) show multi-step attack chains
 - [ ] Phase 5: Every threat scenario has a risk treatment decision (Avoid/Reduce/Transfer/Accept)

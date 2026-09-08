@@ -279,7 +279,7 @@ PDF bookmarks mirror the table of contents for navigation:
 
 | Placeholder | Example Value | Description |
 |-------------|---------------|-------------|
-| `{{PROJECT_NAME}}` | "TaraAgent TARA Documentation" | Project display name |
+| `{{PROJECT_NAME}}` | "TaraOK TARA Documentation" | Project display name |
 | `{{COPYRIGHT_YEAR}}` | "2026" | Copyright year |
 | `{{COPYRIGHT_HOLDER}}` | "Automotive OEM Inc." | Copyright holder |
 | `{{AUTHOR_NAME}}` | "Security Team" | Author name |
@@ -293,7 +293,7 @@ PDF bookmarks mirror the table of contents for navigation:
 | `{{PDF_FILENAME}}` | "tara_complete" | Output PDF filename (no .pdf) |
 | `{{PDF_TITLE}}` | "TARA Complete Archive" | PDF document title |
 | `{{PDF_AUTHOR}}` | "Security Team" | PDF author field |
-| `{{PROJECT_SLUG}}` | "tara-agent" | URL-safe project name |
+| `{{PROJECT_SLUG}}` | "taraok" | URL-safe project name |
 | `{{PROJECT_DESCRIPTION}}` | "Automotive Cybersecurity TARA" | Short description |
 
 ### LaTeX Preamble

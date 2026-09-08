@@ -66,6 +66,10 @@ Use this template to document Cybersecurity Goals (CSGs) for each set of related
 
 - [RT-[DOMAIN]-[NNN] (Risk Treatment Title)]
 
+**Goal Viewpoint** (optional): [OEM vehicle-level | Tier 1/component-level]
+
+**Parent Vehicle-Level Goal** (required for component-level goals): [CSG-ID | N/A for vehicle-level goal]
+
 **Goal Statement**:
 <!-- 
   1-3 sentences expressing the cybersecurity objective as a shall-statement
@@ -181,6 +185,10 @@ Use this template to document Cybersecurity Goals (CSGs) for each set of related
 - RT-IVI-001 [EXAMPLE] (Location Tracking Threat - Reduce via Encryption)
 - RT-IVI-002 [EXAMPLE] (PII Exposure - Reduce via Access Controls)
 
+**Goal Viewpoint**: OEM vehicle-level
+
+**Parent Vehicle-Level Goal**: N/A
+
 **Goal Statement**:
 The vehicle system shall ensure that real-time location data, historical travel patterns, and personal device information are accessible only to authorized users and services. The system shall prevent unauthorized exfiltration, storage, or sharing of location and personal data that could enable driver surveillance, stalking, identity theft, or comprehensive movement tracking.
 
@@ -230,6 +238,8 @@ Before finalizing your Cybersecurity Goal entry, verify:
 
 - [ ] CSG-ID follows format `CSG-[DOMAIN]-[NN]` with valid 2-digit number (01-99)
 - [ ] Title is ≤80 characters and describes the security property/protected asset
+- [ ] Goal Viewpoint is explicit
+- [ ] Component-level goals identify a Parent Vehicle-Level Goal
 - [ ] Related DS-IDs reference valid damage scenarios from data/ds.md (or marked [EXAMPLE])
 - [ ] At least 1 Related DS-ID is listed (no orphan CSGs)
 - [ ] Related RT-IDs reference valid risk treatments from data/rt.md (or marked [EXAMPLE] if TBD)

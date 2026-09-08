@@ -144,6 +144,8 @@ Overall Impact: [1-4] ([Label]) [max of S=X, F=X, O=X, P=X]
   Do not include attack paths or feasibility; capture only the context needed to understand the harm.
 -->
 
+- **Affected Function / Function Cluster**: [Vehicle-level function affected by this damage scenario]
+- **Function Risk Statement**: [What risky, unavailable, malformed, or privacy-invasive function reaches the road user or stakeholder]
 - **Assumptions**: [Architecture, dependency, or stakeholder assumptions used in this score]
 - **Operating Conditions**: [Parked / low speed / highway / ADAS mode / charging / service mode / other]
 - **Population / Scale**: [One vehicle, targeted group, region, fleet-wide, estimated users]
@@ -161,6 +163,8 @@ Before finalizing this damage scenario entry, verify:
 - [ ] Title is clear, concise, and under 80 characters
 - [ ] Title describes the HARM (not the attack method)
 - [ ] Linked Assets lists actual AST-IDs from `data/asset_list.md`
+- [ ] Affected Function / Function Cluster is explicit
+- [ ] Function Risk Statement explains how function reaches road user or stakeholder with risk
 - [ ] Assessment Context records assumptions, operating conditions, scale, duration/recoverability, and evidence/source
 - [ ] All four SFOP dimensions are assessed (Yes/No with justification)
 - [ ] Impact Score is 1-4 and equals the MAX of individual SFOP scores
@@ -210,6 +214,8 @@ Overall Impact: 4 (Critical) [max of S=1, F=3, O=1, P=4]
 
 **Assessment Context**:
 
+- **Affected Function / Function Cluster**: Location-based services and driver travel history
+- **Function Risk Statement**: The vehicle delivers location services with privacy risk because movement patterns can be exposed without authorization
 - **Assumptions**: Location data is stored or transmitted with identifiers that can be linked to a driver or account.
 - **Operating Conditions**: Normal driving and parked states over an extended ownership period.
 - **Population / Scale**: Fleet-scale exposure, potentially 10,000+ users.

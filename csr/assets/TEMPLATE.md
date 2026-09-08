@@ -15,6 +15,7 @@ Use this file as the shape for `data/csr.md`.
 
 - **Status**: ✅ IMPLEMENTED
 - **Category**: [Category Name]
+- **Allocation Target**: [Item | Component | Layer | Interface | Supplier-owned subsystem]
 - **Description**: [Original source-language or source-faithful implemented-control description]
 - **Source**: [Design specification / supplier declaration / datasheet reference]
 - **Related CSG-IDs**:
@@ -29,6 +30,7 @@ Use this file as the shape for `data/csr.md`.
 - **Status**: ❌ GAP | ⚠️ PARTIAL
 - **Priority**: CRITICAL | HIGH | MEDIUM | LOW
 - **Category**: [Category Name]
+- **Allocation Target**: [Item | Component | Layer | Interface | Supplier-owned subsystem]
 - **Description**: [Gap analysis: what exists, what is missing, why it matters]
 - **Identified By**: TS-[DOMAIN]-[NNN] ([Threat Scenario Title]) | TARA Analysis
 - **Recommendation**:

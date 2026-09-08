@@ -101,7 +101,7 @@ directory name directly, for example `damage_scenario/tools/check_ds.py`.
 ```
 Input Documents → 9-Phase TARA → Compliance Work Products
                       ↓
-  Phase 1: asset_analysis      (asset_list.md)
+  Phase 1: item definition + asset_analysis (asset_list.md)
   Phase 2: damage_scenario     (ds.md)
   Phase 3: threat_scenario     (ts.md)
   Phase 4: attack_tree         (at.md, optional)
@@ -134,9 +134,13 @@ sphinx-build --version  # 7.x
 ### Overview
 
 TaraOK orchestrates 9 sequential phases aligned with ISO 21434 Clauses 15.3-15.9, 9.4, and 8.4.
+The workflow starts with an Item Definition Gate inside Phase 1: define the item,
+the vehicle-level function(s), the component boundary, and the assets that live
+in those components before enumerating damages or threats.
 
 **Dependencies**:
-- Phase 1 → Phase 2 (assets required for damage scenarios)
+- Item Definition Gate → Phase 1 asset enumeration (item/function/component boundary required before assets)
+- Phase 1 → Phase 2 (assets and vehicle-level functions required for damage scenarios)
 - Phase 2 → Phase 3 (damage scenarios drive threat enumeration)
 - Phase 3 → Phase 5 (threats inform risk treatment)
 - Phase 2 + Phase 5 → Phase 6 (damage + treatment → goals)
@@ -145,6 +149,7 @@ TaraOK orchestrates 9 sequential phases aligned with ISO 21434 Clauses 15.3-15.9
 - Phase 6 + Phase 8 → Phase 9 (export consumes the Phase 8 report set plus the Phase 1-6 data contract; `csr.md` is not required by `tara_export`)
 
 **Critical Rules**:
+- TARA starts from Item Definition. Do not enumerate assets, damages, or threats before the vehicle-level function boundary is explicit.
 - Phases 1-3 are MANDATORY and SEQUENTIAL
 - Phase 4 (attack trees) is OPTIONAL but strongly recommended for complex systems
 - **Phase 7 and Phase 8 are independent of each other** — both depend on Phase 6, but neither depends on the other. Phase 8 may run as soon as Phase 6 completes; Phase 7 may run in parallel or after.
@@ -159,13 +164,16 @@ TaraOK orchestrates 9 sequential phases aligned with ISO 21434 Clauses 15.3-15.9
 
 Each phase delegates to a sub-skill. The orchestrator's job is to **invoke the sub-skill, pass inputs, and validate outputs** — not to replicate the sub-skill's internal process.
 
-#### Phase 1: Asset Analysis (Clause 15.3)
+#### Phase 1: Item Definition + Asset Analysis (Clause 9.3 / 15.3)
 
 **Skill**: `asset_analysis` | **Output**: `data/asset_list.md`
 
-**Inputs**: System architecture diagrams, network topology, software inventory, external interface specifications (from `input/`)
+**Inputs**: System architecture diagrams, network topology, vehicle-level function description, software inventory, external interface specifications (from `input/`)
 
 **Validation**:
+- Item / TOE boundary is documented before asset entries
+- Vehicle-level function(s) implemented by the item are explicit
+- Components constituting the item are listed or explicitly unknown
 - All security-relevant assets documented
 - Each asset has all 7 required fields (ID, Name, Description, Category, CIA Rating, Interfaces, Related Systems)
 - CIA ratings justified with impact analysis
@@ -181,7 +189,9 @@ Each phase delegates to a sub-skill. The orchestrator's job is to **invoke the s
 
 **Validation**:
 - All high-CIA assets have corresponding damage scenarios
-- Each DS has all 6 required fields (DS-ID, Title, Linked Assets, SFOP Dimensions, Impact Score, Rationale)
+- Each DS identifies the affected vehicle-level function or function cluster
+- Each DS states what Function with RISK reaches the road user or stakeholder
+- Each DS has all 7 required fields (DS-ID, Title, Linked Assets, SFOP Dimensions, Impact Score, Rationale, Assessment Context)
 - Impact Score correctly calculated as MAX(S, F, O, P)
 - SFOP scores justified with regulatory context (GDPR, UN R155, ISO 26262)
 
@@ -256,6 +266,7 @@ Each phase delegates to a sub-skill. The orchestrator's job is to **invoke the s
 **Validation**:
 - All CSGs with Reduce/Avoid treatment have corresponding CSRs (1:N relationship)
 - Each CSR has all required fields (CSR-ID, Title, CSR Type, Related CSG-IDs, Category, Description, Specification Reference, Implementation Status, Verification Method, Priority, Risk Reference, Last Updated)
+- Each CSR identifies an allocation target: Item, Component, layer, interface, or supplier-owned subsystem
 - Part A entries include specification references (source documentation)
 - Part B entries include gap descriptions and CRITICAL/HIGH/MEDIUM/LOW priority
 - Traceability: CSR → CSG → RT → TS → DS → Asset chain complete
@@ -346,7 +357,7 @@ mkdir -p input/{architecture,requirements,reference} data reports docs/sphinx re
 
 | ISO 21434 Clause | Topic | TaraOK Phase | Work Product | Sub-Skill |
 |---|---|---|---|---|
-| 15.3 | Asset identification | Phase 1 | `data/asset_list.md` | `asset_analysis` |
+| 9.3 / 15.3 | Item definition and asset identification | Phase 1 | `data/asset_list.md` | `asset_analysis` |
 | 15.4-15.5 | Damage scenario definition | Phase 2 | `data/ds.md` | `damage_scenario` |
 | 15.6 | Threat scenario identification | Phase 3 | `data/ts.md` | `threat_scenario` |
 | 15.7 | Attack path analysis | Phase 4 | `data/at.md` | `attack_tree` |
@@ -419,8 +430,8 @@ requirements for this skill source repository.
 
 | Phase | Criterion |
 |---|---|
-| 1 | `data/asset_list.md` exists, all assets have AST-ID and CIA ratings |
-| 2 | `data/ds.md` exists, all DS have SFOP scores and Impact = MAX(SFOP) |
+| 1 | `data/asset_list.md` exists, item/function boundary is documented, all assets have AST-ID and CIA ratings |
+| 2 | `data/ds.md` exists, all DS have affected functions, SFOP scores, and Impact = MAX(SFOP) |
 | 3 | `data/ts.md` exists, all TS have AFR 0-15 and framework mappings |
 | 4 | `data/at.md` exists (if run), trees have valid root goals and AFR aggregation |
 | 5 | `data/rt.md` exists, RT count = TS count (1:1), all have treatment decisions |
@@ -430,7 +441,7 @@ requirements for this skill source repository.
 | 9 | Sphinx HTML site + 4 PDFs generated, all files >0 bytes |
 
 **Overall Success**:
-- All full-run data files exist (`data/asset_list.md`, `ds.md`, `ts.md`, `rt.md`, `csg.md`, `csr.md`), with `at.md` present when attack trees were produced
+- All full-run data files exist (`data/asset_list.md`, `ds.md`, `ts.md`, `rt.md`, `csg.md`, `csr.md`), with item/function boundary captured in `asset_list.md` and `at.md` present when attack trees were produced
 - All 3 reports exist in `reports/`
 - Traceability matrix shows complete required chains (AST → DS → TS → RT → CSG), with AT context when present
 - No orphan artifacts (all TS have RT, all active-mitigation RT have CSG)

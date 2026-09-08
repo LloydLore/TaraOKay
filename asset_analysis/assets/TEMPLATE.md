@@ -20,6 +20,17 @@ Use this template to document each asset. Copy this structure and fill in all 7 
   - AST-IFC-001: OBD-II Diagnostic Port
 -->
 
+**Item Context** (recommended):
+- **Component Containment**: [Logical or technical component that contains or owns this asset]
+- **Vehicle-Level Function Contribution**: [Function(s) this asset supports, or `N/A` if indirect]
+- **Function Risk Relevance**: [How this asset can affect delivery of that function]
+
+<!--
+  Item Context keeps component and function relationships visible without
+  creating separate function.md or component.md files.
+  Use `N/A` only when asset has no direct function contribution.
+-->
+
 **Description**: [Write at least 3 complete sentences describing what this asset is, what it does, and why it matters from a cybersecurity perspective. Explain the asset's function, its role in the vehicle system, and its security relevance. Be specific about technical details like protocols, capabilities, and connections.]
 
 <!-- 
@@ -122,6 +133,9 @@ Use this template to document each asset. Copy this structure and fill in all 7 
 
 Before finalizing this asset entry, verify:
 - [ ] Asset ID follows format `AST-[CAT]-[NNN]` and is unique
+- [ ] Component containment is documented or explicitly unknown
+- [ ] Vehicle-level function contribution is documented or marked `N/A`
+- [ ] Function risk relevance is explained when asset supports a vehicle function
 - [ ] Asset Name is clear and descriptive (not generic)
 - [ ] Description has at least 3 complete sentences
 - [ ] Category is one of the 7 defined categories
@@ -138,6 +152,11 @@ Before finalizing this asset entry, verify:
 ## Example (for reference)
 
 ### AST-ECU-003: Engine Control Unit (ECU)
+
+**Item Context**:
+- **Component Containment**: Powertrain control domain
+- **Vehicle-Level Function Contribution**: Propulsion and engine torque control
+- **Function Risk Relevance**: Incorrect torque control can deliver unsafe propulsion behavior to the road user
 
 **Description**: The Engine Control Unit (ECU) is a safety-related embedded computer that manages all aspects of internal combustion engine operation, including fuel injection timing, ignition timing, air-fuel ratio, turbocharger boost pressure, and emissions control. It receives sensor data (throttle position, airflow, coolant temperature, oxygen sensor readings) via the Powertrain CAN-FD bus and outputs actuator commands to fuel injectors, ignition coils, and the electronic throttle body. The Engine ECU is critical for vehicle operation - if it fails or is tampered with, the vehicle cannot start or may experience unintended acceleration, engine stall, or excessive emissions. As a component of the powertrain system, it is subject to emissions regulations (e.g., EPA, CARB) and potential cybersecurity attacks targeting fuel economy manipulation or diagnostics fraud.
 
