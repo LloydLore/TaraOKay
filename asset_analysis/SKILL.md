@@ -152,6 +152,13 @@ For each identified asset, fill in ALL 7 required fields (see `references/asset-
 6. **Interfaces** - All connections and communication channels
 7. **Related Systems** - Dependencies and relationships
 
+#### Asset granularity
+Assets should be defined at a level that is meaningful for security analysis. Avoid overly coarse or overly fine granularity. Each asset should represent a distinct component, data store, or functional unit that has security implications.
+
+Take an example for HW assets like USB and SD-Card. Each of these should be treated as separate assets with their own unique Asset ID, rather than lumping them together under a generic "AST-HW-007: USB and SD-card interface hardware
+" asset.
+
+
 #### Asset ID assignment (collision-safe, monotonic)
 
 Before writing a new asset header, **check the highest existing ID for that category** in `data/asset_list.md` and use `max + 1`. Never reuse retired IDs, never renumber existing IDs.

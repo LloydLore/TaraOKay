@@ -177,7 +177,7 @@ Each phase delegates to a sub-skill. The orchestrator's job is to **invoke the s
 - All security-relevant assets documented
 - Each asset has all 7 required fields (ID, Name, Description, Category, CIA Rating, Interfaces, Related Systems)
 - CIA ratings justified with impact analysis
-- Asset IDs unique and follow format AST-[CODE]-[NNN], where CODE ∈ {ECU, GW, SNS, ACT, COM, DAT, IFC}
+- Asset IDs unique and follow format AST-[CODE]-[NNN], where CODE ∈ {HW, SW, FW, DAR, DIT, DIU}
 
 ---
 
@@ -314,12 +314,12 @@ Each phase delegates to a sub-skill. The orchestrator's job is to **invoke the s
 
 TaraOK accepts reference documents in multiple formats:
 
-| Format | Tool | Use Case |
-|---|---|---|
-| PNG/JPG | OCR (tesseract) or `look_at` tool | System diagrams, architecture screenshots |
-| DOCX | Read tool | Requirements specifications, system descriptions |
-| XLSX | Read tool | Asset inventories, component catalogues |
-| PDF | Read tool | Standards (ISO 21434), regulations (UN R155) |
+| Format  | Tool                              | Use Case                                         |
+|---------|-----------------------------------|--------------------------------------------------|
+| PNG/JPG | OCR (tesseract) or `look_at` tool | System diagrams, architecture screenshots        |
+| DOCX    | Read tool                         | Requirements specifications, system descriptions |
+| XLSX    | Read tool                         | Asset inventories, component catalogues          |
+| PDF     | Read tool                         | Standards (ISO 21434), regulations (UN R155)     |
 
 **Note**: All extracted data must be validated and formatted into Markdown work products (`data/*.md`). Input files are reference only; TARA analysis happens in Markdown.
 
@@ -355,17 +355,17 @@ mkdir -p input/{architecture,requirements,reference} data reports docs/sphinx re
 
 ## 6. ISO 21434 Clause Mappings
 
-| ISO 21434 Clause | Topic | TaraOK Phase | Work Product | Sub-Skill |
-|---|---|---|---|---|
-| 9.3 / 15.3 | Item definition and asset identification | Phase 1 | `data/asset_list.md` | `asset_analysis` |
-| 15.4-15.5 | Damage scenario definition | Phase 2 | `data/ds.md` | `damage_scenario` |
-| 15.6 | Threat scenario identification | Phase 3 | `data/ts.md` | `threat_scenario` |
-| 15.7 | Attack path analysis | Phase 4 | `data/at.md` | `attack_tree` |
-| 15.8 | Risk treatment decision | Phase 5 | `data/rt.md` | `risk_treatment` |
-| 15.9 | Cybersecurity goals | Phase 6 | `data/csg.md` | `csg` |
-| 9.4 | Cybersecurity specifications | Phase 7 | `data/csr.md` | `csr` |
-| 8.4 | Work products documentation | Phase 8 | `reports/*.md` | `tara_report` |
-| 8.4 | Work products publication | Phase 9 | Sphinx docs, PDFs | `tara_export` |
+| ISO 21434 Clause | Topic                                    | TaraOK Phase | Work Product         | Sub-Skill         |
+|------------------|------------------------------------------|--------------|----------------------|-------------------|
+| 9.3 / 15.3       | Item definition and asset identification | Phase 1      | `data/asset_list.md` | `asset_analysis`  |
+| 15.4-15.5        | Damage scenario definition               | Phase 2      | `data/ds.md`         | `damage_scenario` |
+| 15.6             | Threat scenario identification           | Phase 3      | `data/ts.md`         | `threat_scenario` |
+| 15.7             | Attack path analysis                     | Phase 4      | `data/at.md`         | `attack_tree`     |
+| 15.8             | Risk treatment decision                  | Phase 5      | `data/rt.md`         | `risk_treatment`  |
+| 15.9             | Cybersecurity goals                      | Phase 6      | `data/csg.md`        | `csg`             |
+| 9.4              | Cybersecurity specifications             | Phase 7      | `data/csr.md`        | `csr`             |
+| 8.4              | Work products documentation              | Phase 8      | `reports/*.md`       | `tara_report`     |
+| 8.4              | Work products publication                | Phase 9      | Sphinx docs, PDFs    | `tara_export`     |
 
 **UN R155 Alignment**:
 - Annex 5 threat categories mapped in Phase 3 (threat_scenario skill)
@@ -402,20 +402,20 @@ done
 
 **Common Issues**:
 
-| Issue | Phase | Solution |
-|---|---|---|
-| Missing architecture documents | 1 | Populate `input/architecture/` before running |
-| Invalid CIA ratings (not 1-4) | 1 | Fix in `data/asset_list.md`, rerun validation |
-| Missing `asset_list.md` | 2 | Run Phase 1 first |
-| SFOP scores outside 1-4 | 2 | Fix scores per SFOP scale in `damage_scenario` skill |
-| AFR factors not summing 0-15 | 3 | Check 5-factor breakdown in `threat_scenario` skill |
-| TS count ≠ RT count | 5 | Every TS needs an RT. Find orphans: `grep -oE 'TS-[A-Z]{2,5}-[0-9]{3}' data/ts.md \| sort -u` vs `grep -oE 'RT-[A-Z]{2,5}-[0-9]{3}' data/rt.md \| sort -u` |
-| Missing `csg.md` for Phase 7 | 7 | Run Phase 6 first |
-| Traceability mismatch in reports | 8 | Reconcile orphan TS/RT entries before generating reports |
-| `myst_parser` not found | 9 | `pip install myst-parser` |
-| Pandoc not found | 9 | Install Pandoc 3.x from https://pandoc.org/installing.html |
-| LaTeX errors | 9 | Install `texlive-latex-extra texlive-fonts-recommended` (Ubuntu) or MacTeX (macOS) |
-| Can I skip Phase 4? | 4 | Yes. Attack trees are OPTIONAL. Downstream phases include AT context only when `data/at.md` exists. |
+| Issue                            | Phase | Solution                                                                                                                                                   |
+|----------------------------------|-------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Missing architecture documents   | 1     | Populate `input/architecture/` before running                                                                                                              |
+| Invalid CIA ratings (not 1-4)    | 1     | Fix in `data/asset_list.md`, rerun validation                                                                                                              |
+| Missing `asset_list.md`          | 2     | Run Phase 1 first                                                                                                                                          |
+| SFOP scores outside 1-4          | 2     | Fix scores per SFOP scale in `damage_scenario` skill                                                                                                       |
+| AFR factors not summing 0-15     | 3     | Check 5-factor breakdown in `threat_scenario` skill                                                                                                        |
+| TS count ≠ RT count              | 5     | Every TS needs an RT. Find orphans: `grep -oE 'TS-[A-Z]{2,5}-[0-9]{3}' data/ts.md \| sort -u` vs `grep -oE 'RT-[A-Z]{2,5}-[0-9]{3}' data/rt.md \| sort -u` |
+| Missing `csg.md` for Phase 7     | 7     | Run Phase 6 first                                                                                                                                          |
+| Traceability mismatch in reports | 8     | Reconcile orphan TS/RT entries before generating reports                                                                                                   |
+| `myst_parser` not found          | 9     | `pip install myst-parser`                                                                                                                                  |
+| Pandoc not found                 | 9     | Install Pandoc 3.x from https://pandoc.org/installing.html                                                                                                 |
+| LaTeX errors                     | 9     | Install `texlive-latex-extra texlive-fonts-recommended` (Ubuntu) or MacTeX (macOS)                                                                         |
+| Can I skip Phase 4?              | 4     | Yes. Attack trees are OPTIONAL. Downstream phases include AT context only when `data/at.md` exists.                                                        |
 
 **File Update Policy**: TaraOK follows the sub-skill contract for each artifact. Derived outputs such as `reports/*.md`, `_build/html/`, and `output/pdf/*.pdf` are regenerated, while phase skills with append-only rules (for example `attack_tree` appending to `data/at.md`) keep their stricter behavior.
 
@@ -428,17 +428,17 @@ requirements for this skill source repository.
 
 **Phase-Specific Success**:
 
-| Phase | Criterion |
-|---|---|
-| 1 | `data/asset_list.md` exists, item/function boundary is documented, all assets have AST-ID and CIA ratings |
-| 2 | `data/ds.md` exists, all DS have affected functions, SFOP scores, and Impact = MAX(SFOP) |
-| 3 | `data/ts.md` exists, all TS have AFR 0-15 and framework mappings |
-| 4 | `data/at.md` exists (if run), trees have valid root goals and AFR aggregation |
-| 5 | `data/rt.md` exists, RT count = TS count (1:1), all have treatment decisions |
-| 6 | `data/csg.md` exists, all Avoid/Reduce/Transfer-with-active-mitigation RT have CSG, pure Accept/Transfer claims stay in `data/rt.md` |
-| 7 | `data/csr.md` exists, all CSGs for active mitigation treatments have corresponding CSRs |
-| 8 | All 3 reports in `reports/`, counts consistent, Phase 8 uses finalized `tara_report` contract |
-| 9 | Sphinx HTML site + 4 PDFs generated, all files >0 bytes |
+| Phase | Criterion                                                                                                                            |
+|-------|--------------------------------------------------------------------------------------------------------------------------------------|
+| 1     | `data/asset_list.md` exists, item/function boundary is documented, all assets have AST-ID and CIA ratings                            |
+| 2     | `data/ds.md` exists, all DS have affected functions, SFOP scores, and Impact = MAX(SFOP)                                             |
+| 3     | `data/ts.md` exists, all TS have AFR 0-15 and framework mappings                                                                     |
+| 4     | `data/at.md` exists (if run), trees have valid root goals and AFR aggregation                                                        |
+| 5     | `data/rt.md` exists, RT count = TS count (1:1), all have treatment decisions                                                         |
+| 6     | `data/csg.md` exists, all Avoid/Reduce/Transfer-with-active-mitigation RT have CSG, pure Accept/Transfer claims stay in `data/rt.md` |
+| 7     | `data/csr.md` exists, all CSGs for active mitigation treatments have corresponding CSRs                                              |
+| 8     | All 3 reports in `reports/`, counts consistent, Phase 8 uses finalized `tara_report` contract                                        |
+| 9     | Sphinx HTML site + 4 PDFs generated, all files >0 bytes                                                                              |
 
 **Overall Success**:
 - All full-run data files exist (`data/asset_list.md`, `ds.md`, `ts.md`, `rt.md`, `csg.md`, `csr.md`), with item/function boundary captured in `asset_list.md` and `at.md` present when attack trees were produced
