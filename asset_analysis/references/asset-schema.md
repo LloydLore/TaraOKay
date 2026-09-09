@@ -28,22 +28,23 @@ Every asset in the asset catalogue must include ALL 7 required fields:
 
 ### 1. Asset ID
 
-**Format**: `AST-[CAT]-[NNN]`
+**Format**: `AST-[HW]-[NNN]`
 
 **Description**: Unique identifier for the asset following a structured naming convention.
 
 **Category Codes**:
-- `ECU` - Electronic Control Unit
-- `GW` - Gateway
-- `SNS` - Sensor
-- `ACT` - Actuator
-- `COM` - Communication
-- `DAT` - Data
-- `IFC` - Interface
 
-**Example**: `AST-ECU-001`, `AST-GW-012`, `AST-SNS-005`
+- `HW` - Hardware
+- `SW` - Software
+- `FW` - Firmware
+- `DAR` - Data at Rest
+- `DIT` - Data in Transit
+- `DIU` - Data in Use
+
+**Example**: `AST-HW-001`, `AST-SW-012`, `AST-FW-005`
 
 **Rules**:
+
 - Check existing IDs before assigning to avoid conflicts
 - Use zero-padded 3-digit numbers (001, 002, ..., 999)
 - Category code must match the asset's primary classification
@@ -57,13 +58,15 @@ Every asset in the asset catalogue must include ALL 7 required fields:
 
 **Description**: Clear, descriptive name for the asset that identifies its function or role.
 
-**Example**: 
+**Example**:
+
 - "Telematics Control Unit (TCU)"
 - "Central Gateway ECU"
 - "Vehicle Speed Sensor"
 - "CAN Bus Communication Protocol"
 
 **Rules**:
+
 - Use official product names when available
 - Include abbreviations in parentheses on first use
 - Be specific enough to distinguish from similar assets
@@ -77,6 +80,7 @@ Every asset in the asset catalogue must include ALL 7 required fields:
 **Description**: Comprehensive explanation of what the asset is, what it does, and why it matters for vehicle security.
 
 **Example**:
+
 ```
 The Telematics Control Unit (TCU) manages all wireless communications between 
 the vehicle and external networks, including cellular, Wi-Fi, and Bluetooth 
@@ -87,6 +91,7 @@ making it a high-value target for cyber attacks.
 ```
 
 **Rules**:
+
 - Minimum 3 complete sentences
 - Cover: what it is, what it does, security relevance
 - Include technical details (protocols, capabilities, connections)
@@ -101,40 +106,40 @@ making it a high-value target for cyber attacks.
 **Categories**:
 
 | Category | Code | Description |
-|----------|------|-------------|
-| Electronic Control Unit | ECU | Embedded computers that control vehicle functions (engine, brakes, steering, etc.) |
-| Gateway | GW | Network bridges that connect different vehicle buses (CAN, LIN, FlexRay, Ethernet) |
-| Sensor | SNS | Input devices that measure physical properties (speed, temperature, distance, camera, radar, lidar) |
-| Actuator | ACT | Output devices that perform physical actions (motors, valves, displays, speakers) |
-| Communication | COM | Protocols and channels for data exchange (CAN, Ethernet, Bluetooth, cellular, Wi-Fi) |
-| Data | DAT | Stored or transmitted information (calibration data, logs, user data, cryptographic keys) |
-| Interface | IFC | External connection points (OBD-II port, USB, diagnostic connectors, charging port) |
+| ---------- | ------ | ------------- |
+| Hardware | HW | Hardware component such as ECUs, sensors, actuators, and gateways |
+| Software | SW | Software applications and running on vehicle hardware components |
+| Firmware | FW | Software tightly coupled with hardware, often stored in non-volatile memory and responsible for low-level control of hardware components |
+| Data at Rest | DAR | Stored information that resides on non-volatile media within the vehicle (e.g., logs, configuration files, calibration data) |
+| Data in transit | DIT | Protocols and channels for data exchange (CAN, Ethernet, Bluetooth, cellular, Wi-Fi) |
+| Data in use | DIU | Information actively being processed or utilized by the vehicle systems (e.g., cryptographic keys in memory, temporary computation data) |
 
 **Category name ↔ Asset ID code mapping (canonical)**:
 
 | Category Name | Asset ID Code |
-|---|---|
-| ECU | ECU |
-| Gateway | GW |
-| Sensor | SNS |
-| Actuator | ACT |
-| Communication | COM |
-| Data | DAT |
-| Interface | IFC |
+| --- | --- |
+| Hardware | HW |
+| Software | SW |
+| Firmware | FW |
+| Data at Rest | DAR |
+| Data in transit | DIT |
+| Data in use | DIU |
 
-**Example**: `ECU`, `Gateway`, `Sensor`
+**Example**: `HW`, `SW`, `FW`
 
 **Rules**:
-- Must select exactly ONE category from the 7 defined
+
+- Must select exactly ONE category from the 6 defined
 - Choose the category that best represents the asset's primary function
 - If an asset spans multiple categories, classify by its most security-critical aspect
 - Use the **Category Name** in the `Category` field, and use the **Asset ID Code** only in `Asset ID`
 
 **Borderline classification rules**:
+
 - Integrated radios/modems inside an ECU are usually part of the ECU asset unless modeled separately for TARA scope.
-- A protocol or transport channel (cellular, Bluetooth, Wi-Fi, CAN, Ethernet) is `Communication`.
+- A protocol or transport channel (cellular, Bluetooth, Wi-Fi, CAN, Ethernet) is `Data in transit`.
 - A physical or logical access point exposed to users, service tools, chargers, or external actors is `Interface`.
-- Configuration, credentials, routing tables, firmware images, logs, and key material are `Data` even when stored inside an ECU.
+- Configuration, credentials, routing tables, firmware images, logs, and key material are `Data at rest` even when stored inside an ECU.
 - If two categories seem plausible, choose one canonical category and document the rationale in `Evidence & Confidence` / assumptions.
 
 ---
@@ -148,7 +153,7 @@ making it a high-value target for cyber attacks.
 **Scale**:
 
 | Level | Numeric | Confidentiality (data sensitivity class) | Integrity (trust-criticality) | Availability (time-criticality) |
-|-------|---------|------------------------------------------|-------------------------------|---------------------------------|
+| ------- | --------- | ------------------------------------------ | ------------------------------- | --------------------------------- |
 | Negligible | 1 | Public / freely shareable | Informational; tampering is harmless | Optional; can be offline indefinitely |
 | Moderate | 2 | Internal-use; limited sensitivity | Operational; tampering causes degraded UX | Convenience; brief outage tolerable |
 | Major | 3 | Restricted; PII / proprietary | Important; must be authentic for correct function | Important; sustained outage disrupts function |
@@ -157,10 +162,12 @@ making it a high-value target for cyber attacks.
 **Format**: `C:X / I:X / A:X` where X is the numeric rating (1-4)
 
 **Example**:
+
 - `C:3 / I:4 / A:2` - PII data, integrity must be tamper-proof, brief outage tolerable
 - `C:1 / I:3 / A:4` - Public data, integrity must be authentic, must be continuously available
 
 **Rules**:
+
 - Rate each dimension (C, I, A) independently based on the asset's **intrinsic** property, not on any specific attack outcome
 - **Confidentiality**: How sensitive is this data by nature?
 - **Integrity**: How trust-critical must this data/function be by nature?
@@ -173,12 +180,13 @@ making it a high-value target for cyber attacks.
 ISO/SAE 21434 explicitly allows additional cybersecurity properties beyond C/I/A when the asset's nature requires them. They are **optional** and, if used, MUST be recorded as a separate annotation under CIA — never folded into the `C:X / I:X / A:X` numbers.
 
 | Property | When to record it | How to record |
-|----------|-------------------|---------------|
+| ---------- | ------------------- | --------------- |
 | **Authenticity** | Asset's value depends on proving *who* produced/sent the data (e.g. signed firmware, signed CAN messages, signed OTA manifests) | Add bullet `- Authenticity: [Negligible \| Moderate \| Major \| Severe] — [why]` under the CIA bullets |
 | **Non-repudiation** | A party must not be able to plausibly deny an action (e.g. diagnostic session logs, tachograph records, regulated event logs) | Add bullet `- Non-repudiation: [Negligible \| Moderate \| Major \| Severe] — [why]` under the CIA bullets |
 | **Authorization / Accountability** | Distinct from integrity (e.g. role-based access enforcement on diagnostic services UDS 0x27/0x29) | Same pattern; one bullet per property |
 
 **Rules**:
+
 - Do NOT mutate the `C:X / I:X / A:X` line — the validation regex (`references/validation.md` step [5/7]) only matches three dimensions and downstream tools depend on it.
 - These extra properties are **descriptive**, not part of the canonical CIA score. Downstream `damage_scenario` reads CIA + free-text justification, so put authenticity/non-repudiation reasoning in the justification bullets where it will be picked up.
 - If you find yourself repeatedly needing a 4th dimension across many assets, raise it as a project-level decision instead of silently extending the schema.
@@ -192,6 +200,7 @@ ISO/SAE 21434 explicitly allows additional cybersecurity properties beyond C/I/A
 **Description**: All communication channels, network connections, and integration points with other vehicle systems or external entities.
 
 **Example**:
+
 ```
 Interfaces:
 - CAN-FD powertrain bus (connection to Engine ECU, Transmission ECU)
@@ -202,6 +211,7 @@ Interfaces:
 ```
 
 **Rules**:
+
 - List ALL interfaces (internal and external)
 - Specify protocols used (CAN, Ethernet, Bluetooth, etc.)
 - Identify connected systems/ECUs
@@ -218,6 +228,7 @@ Interfaces:
 **Description**: Other assets that this asset depends on, interacts with, or affects. Maps the asset's position in the vehicle system architecture.
 
 **Example**:
+
 ```
 Related Systems:
 - Depends on: Central Gateway (for network routing), Power Management ECU (for power supply)
@@ -227,6 +238,7 @@ Related Systems:
 ```
 
 **Rules**:
+
 - Identify dependencies (what this asset needs to function)
 - Identify dependents (what depends on this asset)
 - Note security relationships (authentication, encryption, trust boundaries)
@@ -239,40 +251,41 @@ Related Systems:
 
 ## Asset Categories - Detailed Definitions
 
-### Electronic Control Unit (ECU)
+### Hardware (HW)
+
 Embedded computers with microprocessors that control specific vehicle functions. Examples: Engine Control Module (ECM), Brake Control Module (BCM), Airbag Control Unit (ACU), Body Control Module (BCM).
 
 **Security Considerations**: ECUs often run safety-critical functions. Compromise can lead to loss of vehicle control, injury, or death.
 
-### Gateway (GW)
-Network bridges that connect different vehicle communication buses (CAN, LIN, FlexRay, Ethernet). Gateways route messages between network segments and often implement firewall rules.
+### Software (SW)
 
-**Security Considerations**: Gateways are critical chokepoints. A compromised gateway can enable lateral movement across vehicle networks.
+Programs and applications that run on vehicle hardware to provide functionality. Examples: Infotainment software, ECU control software, middleware, operating systems.
 
-### Sensor (SNS)
-Input devices that measure physical properties and convert them to electrical signals. Examples: Speed sensors, cameras, radar, lidar, temperature sensors, pressure sensors.
+**Security Considerations**: Software vulnerabilities can be exploited to gain unauthorized access, escalate privileges, or disrupt vehicle functions.
 
-**Security Considerations**: Sensor spoofing can mislead automated driving systems or safety functions.
+### Firmware (FW)
 
-### Actuator (ACT)
-Output devices that convert electrical signals into physical actions. Examples: Motors (steering, throttle), valves (fuel injection, brakes), displays, speakers.
+Low-level software that is closely tied to hardware, often stored in non-volatile memory. Examples: ECU bootloaders, device drivers, microcontroller firmware.
 
-**Security Considerations**: Unauthorized actuator control can directly cause unsafe vehicle behavior.
+**Security Considerations**: Firmware vulnerabilities can be exploited to gain persistent control over hardware, bypass security mechanisms, or disrupt vehicle functions.
 
-### Communication (COM)
+### Data-at-Rest (DAT)
+
+Information stored on the vehicle, typically in non-volatile memory. Examples: Calibration data, firmware images, logs, cryptographic keys, user profiles.
+
+**Security Considerations**: Unauthorized access to data at rest can lead to data theft, tampering, or deletion, potentially compromising vehicle security and privacy.
+
+### Data-in-Transit (DIT)
+
 Protocols and channels for data exchange within the vehicle or between vehicle and external systems. Examples: CAN bus, Ethernet, Bluetooth, cellular (LTE/5G), Wi-Fi, V2X.
 
 **Security Considerations**: Communication channels are attack surfaces. Unencrypted or unauthenticated channels enable eavesdropping and injection attacks.
 
-### Data (DAT)
+### Data-in-Use (DIU)
+
 Information stored or transmitted by vehicle systems. Examples: Calibration data, firmware, user profiles, location history, cryptographic keys, diagnostic logs.
 
 **Security Considerations**: Data theft can violate privacy. Data tampering can disable security controls or alter vehicle behavior.
-
-### Interface (IFC)
-Physical or logical connection points that provide external access to vehicle systems. Examples: OBD-II port, USB ports, diagnostic connectors, charging port, infotainment inputs.
-
-**Security Considerations**: Interfaces are entry points for attackers. Unsecured interfaces enable unauthorized access to internal networks.
 
 ---
 
@@ -312,13 +325,13 @@ Ask: "How time-critical is continuous availability **by its nature**?"
 ## Example Asset Entry
 
 ```markdown
-**Asset ID**: AST-ECU-015
+**Asset ID**: AST-HW-015
 
 **Asset Name**: Telematics Control Unit (TCU)
 
 **Description**: The Telematics Control Unit (TCU) manages all wireless communications between the vehicle and external networks, including cellular (LTE/5G), Wi-Fi, and Bluetooth connections. It handles over-the-air (OTA) software updates, remote diagnostics, emergency call (eCall) services, stolen vehicle tracking, and infotainment connectivity features. The TCU is a critical gateway between the vehicle's internal CAN/Ethernet networks and the outside world, making it a high-value target for remote cyber attacks and a key component in the vehicle's attack surface.
 
-**Category**: ECU
+**Category**: HW
 
 **CIA Rating**: C:3 / I:4 / A:3
 - Confidentiality (Major): Contains user location data, personal contacts, and vehicle usage patterns
@@ -346,11 +359,11 @@ Ask: "How time-critical is continuous availability **by its nature**?"
 ## Quick Reference Table
 
 | Field | Format | Example |
-|-------|--------|---------|
-| Asset ID | `AST-[CAT]-[NNN]` | AST-ECU-015 |
+| ------- | -------- | --------- |
+| Asset ID | `AST-[HW]-[NNN]` | AST-HW-015 |
 | Asset Name | Human-readable text | Telematics Control Unit (TCU) |
 | Description | 3+ sentences | The TCU manages all wireless... |
-| Category | ECU \| Gateway \| Sensor \| Actuator \| Communication \| Data \| Interface | ECU |
+| Category | HW \| SW \| HW \| DAR \| DIT \| DIU \|
 | CIA Rating | C:X / I:X / A:X (1-4 scale) | C:3 / I:4 / A:3 |
 | Interfaces | List of connections | CAN-FD bus, Cellular LTE, Bluetooth... |
 | Related Systems | Dependencies & relationships | Depends on Central Gateway... |
@@ -361,11 +374,11 @@ Ask: "How time-critical is continuous availability **by its nature**?"
 
 Before finalizing an asset entry, verify:
 
-- [ ] Asset ID follows `AST-[CAT]-[NNN]` format
+- [ ] Asset ID follows `AST-[HW]-[NNN]` format
 - [ ] Asset ID is unique (no duplicates)
 - [ ] Asset Name is clear and descriptive
 - [ ] Description has at least 3 complete sentences
-- [ ] Category is one of the 7 defined categories
+- [ ] Category is one of the 6 defined categories
 - [ ] CIA Rating has all three dimensions (C, I, A) with values 1-4
 - [ ] CIA Rating justification is documented
 - [ ] Interfaces lists ALL connection points (internal and external)

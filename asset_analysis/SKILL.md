@@ -13,11 +13,11 @@ description: >-
 
 This skill is **one node** in the ISO 21434 TARA pipeline. Do NOT cross into siblings' territory:
 
-| Skill | Owns | Key Output | Hand-off |
-|-------|------|------------|----------|
-| **asset_analysis** (this) | What exists + intrinsic CIA sensitivity | `data/asset_list.md` | → damage_scenario |
-| `damage_scenario` | What happens if compromised (SFOP severity, ISO 21434 §15.4) | `data/ds.md` | → threat_scenario |
-| `threat_scenario` | How it gets compromised (attack paths, AFR, §15.5–15.7) | `data/ts.md` | → attack_tree / risk_treatment |
+| Skill                     | Owns                                                         | Key Output           | Hand-off                       |
+|---------------------------|--------------------------------------------------------------|----------------------|--------------------------------|
+| **asset_analysis** (this) | What exists + intrinsic CIA sensitivity                      | `data/asset_list.md` | → damage_scenario              |
+| `damage_scenario`         | What happens if compromised (SFOP severity, ISO 21434 §15.4) | `data/ds.md`         | → threat_scenario              |
+| `threat_scenario`         | How it gets compromised (attack paths, AFR, §15.5–15.7)      | `data/ts.md`         | → attack_tree / risk_treatment |
 
 **Routing rules** (re-route the user instead of doing the wrong work):
 - User asks "what's the impact if X is hacked / how bad is it" → **route to `damage_scenario`**, do NOT inflate CIA here.
@@ -134,18 +134,17 @@ Take detailed notes on:
 - Security-relevant assets (what needs protection)
 
 ### Step 3: Identify Asset Categories
-For each component or data element identified, classify it into one of 7 categories:
-- **ECU** - Electronic Control Units (embedded computers controlling vehicle functions)
-- **Gateway** - Network bridges connecting different buses
-- **Sensor** - Input devices measuring physical properties
-- **Actuator** - Output devices performing physical actions
-- **Communication** - Protocols and channels for data exchange
-- **Data** - Stored or transmitted information
-- **Interface** - External connection points
+For each asset identified, classify it into one of below categories:
+- **Hardware** - Physical components of the vehicle system, such as ECUs, sensors, and actuators. It uses `HW` to denote the category in asset IDs.
+- **Software** - Programs and applications running on the vehicle system. It uses `SW` to denote the category in asset IDs.
+- **Firmware** - Low-level software embedded in hardware components. It uses `FW` to denote the category in asset IDs.
+- **Data-at-rest** - Information stored on the vehicle system. It uses `DAR` to denote the category in asset IDs.
+- **Data-in-transit** - Information being transmitted across the vehicle network. It uses `DIT` to denote the category in asset IDs.
+- **Data-in-use** - Information actively being processed by the vehicle system. It uses `DIU` to denote the category in asset IDs.
 
 ### Step 4: Document Each Asset
 For each identified asset, fill in ALL 7 required fields (see `references/asset-schema.md`):
-1. **Asset ID** - Format `AST-[CAT]-[NNN]` (e.g., AST-ECU-001)
+1. **Asset ID** - Format `AST-[HW]-[NNN]` (e.g., AST-HW-001)
 2. **Asset Name** - Human-readable name
 3. **Description** - Detailed explanation (minimum 3 sentences)
 4. **Category** - One of the 7 vehicle system categories
@@ -158,30 +157,29 @@ For each identified asset, fill in ALL 7 required fields (see `references/asset-
 Before writing a new asset header, **check the highest existing ID for that category** in `data/asset_list.md` and use `max + 1`. Never reuse retired IDs, never renumber existing IDs.
 
 ```bash
-# Example: pick next free ID for category GW
-LAST=$(grep -oE '^### AST-GW-[0-9]{3}:' data/asset_list.md 2>/dev/null \
+# Example: pick next free ID for category HW
+LAST=$(grep -oE '^### AST-HW-[0-9]{3}:' data/asset_list.md 2>/dev/null \
        | sort -u | tail -1 | grep -oE '[0-9]{3}')
-NEXT=$(printf 'AST-GW-%03d' $((10#${LAST:-000} + 1)))
+NEXT=$(printf 'AST-HW-%03d' $((10#${LAST:-000} + 1)))
 echo "$NEXT"
 ```
 
-If `data/asset_list.md` does not yet exist, the first ID is `AST-[CAT]-001`. Repeat per category (`ECU|GW|SNS|ACT|COM|DAT|IFC`). IDs are append-only and stable across revisions (see `references/asset-schema.md` §1 ID Stability rule).
+If `data/asset_list.md` does not yet exist, the first ID is `AST-[HW]-001`. Repeat per category (`HW|SW|FW|DAR|DIT|DIU`). IDs are append-only and stable across revisions (see `references/asset-schema.md` §1 ID Stability rule).
 
 Use the canonical name/code mapping (English labels are normative — do **not** localize):
 
 | Category Name (use in `Category:` field) | Asset ID Code (use only inside `AST-*` ID) |
 |------------------------------------------|--------------------------------------------|
-| `ECU`            | `ECU` |
-| `Gateway`        | `GW`  |
-| `Sensor`         | `SNS` |
-| `Actuator`       | `ACT` |
-| `Communication`  | `COM` |
-| `Data`           | `DAT` |
-| `Interface`      | `IFC` |
+| `Hardware`                               | `HW`                                       |
+| `Software`                               | `SW`                                       |
+| `Firmware`                               | `FW`                                       |
+| `Data-at-rest`                           | `DAR`                                      |
+| `Data-in-transit`                        | `DIT`                                      |
+| `Data-in-use`                            | `DIU`                                      |
 
-**Rule**: Put the **Category Name** (left column, e.g. `Gateway`) in the `Category:` field. Put the **Asset ID Code** (right column, e.g. `GW`) only inside the `Asset ID:` field as `AST-GW-NNN`. Do not mix them (`Category: GW` is wrong; `Asset ID: AST-Gateway-001` is wrong).
+**Rule**: Put the **Category Name** (left column, e.g. `Hardware`) in the `Category:` field. Put the **Asset ID Code** (right column, e.g. `HW`) only inside the `Asset ID:` field as `AST-HW-NNN`. Do not mix them (`Category: HW` is wrong; `Asset ID: AST-Hardware-001` is wrong).
 
-**English-only**: the `Category:` field MUST contain exactly one of the seven English labels above. Localized names such as `网关`, `传感器`, `执行器`, `通信`, `数据`, `接口`, `控制器` (or any other translation) are **forbidden** in this field — they break the validation regex in `references/validation.md` and downstream tooling. Translate freely in `Description:` and prose, never in `Category:`.
+**English-only**: the `Category:` field MUST contain exactly one of the six English labels above. Localized names such as `网关`, `传感器`, `执行器`, `通信`, `数据`, `接口`, `控制器` (or any other translation) are **forbidden** in this field — they break the validation regex in `references/validation.md` and downstream tooling. Translate freely in `Description:` and prose, never in `Category:`.
 
 Use `assets/TEMPLATE.md` as a starting point for each asset.
 
@@ -221,10 +219,10 @@ Recommended command checks (optional but strongly encouraged):
 
 ```bash
 # 1) Asset header format + count
-grep -cE '^### AST-(ECU|GW|SNS|ACT|COM|DAT|IFC)-[0-9]{3}:' data/asset_list.md
+grep -cE '^### AST-(HW|SW|FW|DAR|DIT|DIU)-[0-9]{3}:' data/asset_list.md
 
 # 2) Duplicate Asset IDs (should be empty)
-grep -oE 'AST-(ECU|GW|SNS|ACT|COM|DAT|IFC)-[0-9]{3}' data/asset_list.md | sort | uniq -d
+grep -oE 'AST-(HW|SW|FW|DAR|DIT|DIU)-[0-9]{3}' data/asset_list.md | sort | uniq -d
 
 # 3) CIA format presence
 grep -qE 'C:[1-4]\s*/\s*I:[1-4]\s*/\s*A:[1-4]' data/asset_list.md
@@ -324,25 +322,24 @@ The output file `data/asset_list.md` should follow this structure:
 
 ## Asset Summary by Category
 
-| Category | Count | Examples |
-|----------|-------|----------|
-| ECU | X | Engine ECU, Brake ECU, ... |
-| Gateway | X | Central Gateway, ... |
-| Sensor | X | Speed Sensor, Camera, ... |
-| Actuator | X | Throttle Motor, ... |
-| Communication | X | CAN Bus, Ethernet, ... |
-| Data | X | Cryptographic Keys, ... |
-| Interface | X | OBD-II Port, USB, ... |
+| Category | Count | Examples                   |
+|----------|-------|----------------------------|
+| HW       | X     | Engine ECU, Brake ECU, ... |
+| SW       | X     | Central Gateway, ...       |
+| FW       | X     | Speed Sensor, Camera, ...  |
+| DAR      | X     | Throttle Motor, ...        |
+| DIT      | X     | CAN Bus, Ethernet, ...     |
+| DIU      | X     | Cryptographic Keys, ...    |
 
 ---
 
 ## Asset Catalogue
 
-### AST-ECU-001: [Asset Name]
+### AST-HW-001: [Asset Name]
 
 **Description**: [3+ sentences describing the asset, its function, and security relevance]
 
-**Category**: ECU
+**Category**: HW
 
 **CIA Rating**: C:X / I:X / A:X
 - Confidentiality (Level): [Justification]
@@ -365,7 +362,7 @@ The output file `data/asset_list.md` should follow this structure:
 
 ---
 
-### AST-[CAT]-[NNN]: [Next Asset Name]
+### AST-SW-[NNN]: [Next Asset Name]
 
 [Repeat above structure for each asset]
 
@@ -396,7 +393,7 @@ The output file `data/asset_list.md` should follow this structure:
 
 MUST NOT:
 - **Invent or fabricate asset information** -- All asset data must come from user input, reference documents, or explicit analysis. Do not make up technical details.
-- **Add asset categories beyond the 7 defined** -- Only use: ECU, Gateway, Sensor, Actuator, Communication, Data, Interface. Do not create custom categories.
+- **Add asset categories beyond the 6 defined** -- Only use: ECU, Gateway, Sensor, Actuator, Communication, Data, Interface. Do not create custom categories.
 - **Skip item definition** -- The item/TOE, vehicle-level function(s), and constituent components must be recorded before asset entries.
 - **Assign CIA ratings without justification** -- Every CIA rating must be based on explicit impact analysis. Document the reasoning.
 - **Hide uncertainty** -- If evidence is missing, explicitly record Unknown/Assumption instead of guessing.
@@ -410,13 +407,13 @@ MUST NOT:
 
 ## 7. Reference Files
 
-| File | Contents |
-|------|----------|
-| `references/asset-schema.md` | Complete specification of 7 required fields, CIA rating guidelines, category definitions, validation checklist |
-| `references/validation.md` | End-to-end validation flow for `data/asset_list.md` (format, completeness, consistency, placeholders) |
-| `references/examples/example-01-telematics.md` | Example scenario: Telematics Control Unit analysis with sample interview Q&A and expected output |
-| `references/examples/example-02-gateway.md` | Example scenario: Central Gateway ECU analysis showing multiple related assets |
-| `assets/TEMPLATE.md` | Blank 7-field asset template ready to copy-paste for new assets |
+| File                                           | Contents                                                                                                       |
+|------------------------------------------------|----------------------------------------------------------------------------------------------------------------|
+| `references/asset-schema.md`                   | Complete specification of 7 required fields, CIA rating guidelines, category definitions, validation checklist |
+| `references/validation.md`                     | End-to-end validation flow for `data/asset_list.md` (format, completeness, consistency, placeholders)          |
+| `references/examples/example-01-telematics.md` | Example scenario: Telematics Control Unit analysis with sample interview Q&A and expected output               |
+| `references/examples/example-02-gateway.md`    | Example scenario: Central Gateway ECU analysis showing multiple related assets                                 |
+| `assets/TEMPLATE.md`                           | Blank 7-field asset template ready to copy-paste for new assets                                                |
 
 For detailed field specifications, CIA rating scales, and category definitions, see `references/asset-schema.md`.
 
