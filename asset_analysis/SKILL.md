@@ -156,7 +156,7 @@ For each identified asset, fill in ALL 7 required fields (see `references/asset-
 Assets should be defined at a level that is meaningful for security analysis. Avoid overly coarse or overly fine granularity. Each asset should represent a distinct component, data store, or functional unit that has security implications.
 
 Take an example for HW assets like USB and SD-Card. Each of these should be treated as separate assets with their own unique Asset ID, rather than lumping them together under a generic "AST-HW-007: USB and SD-card interface hardware
-" asset.
+" asset. Other similar cases should also be treated separately. The asset granularity is to ensure the atomic unit of analysis for security purposes. 
 
 
 #### Asset ID assignment (collision-safe, monotonic)
