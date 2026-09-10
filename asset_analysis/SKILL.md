@@ -158,6 +158,57 @@ Assets should be defined at a level that is meaningful for security analysis. Av
 Take an example for HW assets like USB and SD-Card. Each of these should be treated as separate assets with their own unique Asset ID, rather than lumping them together under a generic "AST-HW-007: USB and SD-card interface hardware
 " asset. Other similar cases should also be treated separately. The asset granularity is to ensure the atomic unit of analysis for security purposes. 
 
+This rule applies to the entire asset catalogue, not only to USB and SD-card. 
+
+A candidate asset is too coarse when it combines units that differ in any of the following:
+- physical ownership or interface
+- logical function or privilege
+- trust boundary
+- attack surface
+- data sensitivity
+- CIA profile
+- security-relevant downstream use
+
+Examples include, but are not limited to:
+- CSD, DIM, HUD and rear display
+- DMS, OMS, cabin and surround-view cameras
+- microphone input and speaker output
+- Bluetooth, WLAN client and WLAN hotspot
+- vehicle-control services and media/navigation services
+- biometric, location, communication and configuration data
+- inter-domain, wireless and cloud communication
+
+These examples are illustrative, not exhaustive.
+
+Before editing the asset list, perform a six-category atomicity audit and record a KEEP/SPLIT decision for every existing asset. The final output must include either: 
+- a reason why each retained asset is already atomic; or
+- the child assets created from each split parent. 
+
+#### Asset Atomicity Audit
+
+- Existing assets reviewed: N
+- Assets kept unchanged: N
+- Assets split: N
+- New assets to add: N
+
+**Assets kept**
+- AST-...- reason
+
+**Assets to split**
+- AST-... -> ...
+   - Evidence:
+   - Different security boundary:
+   - Different CIA or analysis consequence:
+
+**Explicit check**
+- [ ] Reviewed Hardware
+- [ ] Reviewed Software
+- [ ] Reviewed Firmware
+- [ ] Reviewed Data-at-rest
+- [ ] Reviewed Data-in-transit
+- [ ] Reviewed Data-in-use
+- [ ] No other composite asset remain unexplained. 
+
 
 #### Asset ID assignment (collision-safe, monotonic)
 
