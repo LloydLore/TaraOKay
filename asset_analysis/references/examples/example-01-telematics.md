@@ -131,10 +131,10 @@ Based on the interview above, the asset analysis would produce entries like thes
 
 **Category**: ECU
 
-**CIA Rating**: C:3 / I:4 / A:3
-- Confidentiality (Major): The TCU stores and processes restricted user and vehicle data such as location history, paired-device identifiers, contact metadata, and telemetry records. These data classes are intrinsically privacy-sensitive and require controlled disclosure.
-- Integrity (Severe): The TCU mediates OTA updates, remote commands, and authenticated communication toward internal vehicle systems. Its firmware, configuration, and update-validation chain are safety-grade trust anchors and must remain tamper-proof by design.
-- Availability (Major): The TCU provides continuously expected connectivity services such as eCall signaling, OTA availability, telemetry upload, and remote service access. These functions are operationally important and require sustained availability, though the vehicle can still retain basic drive capability without them.
+**CIA Property**: C:Y / I:Y / A:Y
+- Confidentiality (Y): The TCU stores and processes restricted user and vehicle data such as location history, paired-device identifiers, contact metadata, and telemetry records. These data classes are intrinsically privacy-sensitive and require controlled disclosure.
+- Integrity (Y): The TCU mediates OTA updates, remote commands, and authenticated communication toward internal vehicle systems. Its firmware, configuration, and update-validation chain are safety-grade trust anchors and must remain tamper-proof by design.
+- Availability (Y): The TCU provides continuously expected connectivity services such as eCall signaling, OTA availability, telemetry upload, and remote service access. These functions are operationally important and require sustained availability, though the vehicle can still retain basic drive capability without them.
 
 **Interfaces**:
 - Ethernet backbone (100BASE-T1 to Central Gateway ECU)
@@ -164,10 +164,10 @@ Based on the interview above, the asset analysis would produce entries like thes
 
 **Category**: Sensor
 
-**CIA Rating**: C:3 / I:2 / A:3
-- Confidentiality (Major): Location data reveals user's movements, home address, travel patterns, and can be used for surveillance. GDPR classifies location as personal data requiring protection.
-- Integrity (Moderate): GNSS position data must be sufficiently trustworthy for location-based services, but the receiver is an input sensor rather than an actuator or control authority. Authenticity concerns are relevant because unauthenticated satellite signals can be spoofed.
-- Availability (Major): Accurate location is an important continuously expected input for eCall, tracking, telemetry, and navigation functions. Sustained receiver unavailability materially degrades these location-dependent services.
+**CIA Property**: C:Y / I:Y / A:Y
+- Confidentiality (Y): Location data reveals user's movements, home address, travel patterns, and can be used for surveillance. GDPR classifies location as personal data requiring protection.
+- Integrity (Y): GNSS position data must be sufficiently trustworthy for location-based services, but the receiver is an input sensor rather than an actuator or control authority. Authenticity concerns are relevant because unauthenticated satellite signals can be spoofed.
+- Availability (Y): Accurate location is an important continuously expected input for eCall, tracking, telemetry, and navigation functions. Sustained receiver unavailability materially degrades these location-dependent services.
 
 **Interfaces**:
 - GPS/GNSS satellite signals (1.2 GHz and 1.5 GHz bands, receive-only)
@@ -188,10 +188,10 @@ Based on the interview above, the asset analysis would produce entries like thes
 
 **Category**: Communication
 
-**CIA Rating**: C:3 / I:4 / A:4
-- Confidentiality (Major): The cellular channel carries restricted telemetry, location, diagnostic, remote-service, and emergency-call data. Even when protected by TLS for backend traffic, the channel's data classes are intrinsically privacy-sensitive.
-- Integrity (Severe): The cellular channel transports OTA packages, remote commands, and diagnostic exchanges that must be authentic and protected from manipulation. Its message integrity and endpoint authenticity are safety-grade trust requirements for connected-vehicle operation.
-- Availability (Severe): Cellular connectivity is designed as an always-available external communication path for eCall, OTA, telemetry, remote diagnostics, and stolen-vehicle recovery. These connected services require continuous or near-continuous availability by design.
+**CIA Property**: C:Y / I:Y / A:Y
+- Confidentiality (Y): The cellular channel carries restricted telemetry, location, diagnostic, remote-service, and emergency-call data. Even when protected by TLS for backend traffic, the channel's data classes are intrinsically privacy-sensitive.
+- Integrity (Y): The cellular channel transports OTA packages, remote commands, and diagnostic exchanges that must be authentic and protected from manipulation. Its message integrity and endpoint authenticity are safety-grade trust requirements for connected-vehicle operation.
+- Availability (Y): Cellular connectivity is designed as an always-available external communication path for eCall, OTA, telemetry, remote diagnostics, and stolen-vehicle recovery. These connected services require continuous or near-continuous availability by design.
 
 **Interfaces**:
 - Cellular modem hardware (integrated in TCU, supports LTE Cat-4 and 5G NR)
@@ -214,10 +214,10 @@ Based on the interview above, the asset analysis would produce entries like thes
 
 **Category**: Communication
 
-**CIA Rating**: C:2 / I:2 / A:1
-- Confidentiality (Moderate): Bluetooth carries phone contact metadata, pairing identifiers, and sometimes synchronized contact-list data. These data classes have limited but real privacy sensitivity.
-- Integrity (Moderate): Bluetooth pairing state, audio routing, and profile data must remain authentic for correct hands-free and device-integration behavior. The channel is operationally important but not safety-grade.
-- Availability (Negligible): Loss of Bluetooth only impacts convenience (hands-free calling). Vehicle remains fully drivable and safe without Bluetooth functionality.
+**CIA Property**: C:Y / I:Y / A:N
+- Confidentiality (Y): Bluetooth carries phone contact metadata, pairing identifiers, and sometimes synchronized contact-list data. These data classes have limited but real privacy sensitivity.
+- Integrity (Y): Bluetooth pairing state, audio routing, and profile data must remain authentic for correct hands-free and device-integration behavior. The channel is operationally important but not safety-grade.
+- Availability (N): Loss of Bluetooth only impacts convenience (hands-free calling). Vehicle remains fully drivable and safe without Bluetooth functionality.
 
 **Interfaces**:
 - Bluetooth 5.0 radio (2.4 GHz ISM band, integrated in TCU hardware)
@@ -240,10 +240,10 @@ Based on the interview above, the asset analysis would produce entries like thes
 
 **Category**: Communication
 
-**CIA Rating**: C:1 / I:1 / A:1
-- Confidentiality (Negligible): Wi-Fi traffic is isolated from vehicle systems. Passenger internet traffic is not vehicle data, so confidentiality impact on the vehicle is negligible. (Passenger privacy is a separate concern.)
-- Integrity (Negligible): The Wi-Fi network is strictly segregated from vehicle controls. Even if an attacker compromises the Wi-Fi, they cannot modify vehicle functions or safety-critical data.
-- Availability (Negligible): Loss of in-vehicle Wi-Fi hotspot is purely a convenience issue for passengers. Vehicle operation and safety are unaffected.
+**CIA Property**: C:N / I:N / A:N
+- Confidentiality (N): Wi-Fi traffic is isolated from vehicle systems. Passenger internet traffic is not a protected vehicle data asset in this analysis. (Passenger privacy is a separate concern.)
+- Integrity (N): The Wi-Fi network is strictly segregated from vehicle controls. Even if an attacker compromises the Wi-Fi, they cannot modify vehicle functions or safety-critical data.
+- Availability (N): Loss of in-vehicle Wi-Fi hotspot is purely a convenience issue for passengers. Vehicle operation and safety are unaffected.
 
 **Interfaces**:
 - Wi-Fi 802.11ac radio (2.4 GHz and 5 GHz, integrated in TCU)
@@ -265,10 +265,10 @@ Based on the interview above, the asset analysis would produce entries like thes
 
 **Category**: Data
 
-**CIA Rating**: C:4 / I:4 / A:3
-- Confidentiality (Severe): TLS private keys, OEM CA certificates, OTA signing roots, and user-data encryption keys are secret credential material by nature. They require the highest confidentiality class because their value depends on non-disclosure.
-- Integrity (Severe): Cryptographic keys are trust anchors for backend authentication, encrypted storage, pairing, and update validation. Their values and provenance must remain tamper-proof by design.
-- Availability (Major): The key material is required for authenticated backend communication, remote services, encrypted data access, and update validation. Loss or corruption requires re-provisioning and materially disrupts connected services.
+**CIA Property**: C:Y / I:Y / A:Y
+- Confidentiality (Y): TLS private keys, OEM CA certificates, OTA signing roots, and user-data encryption keys are secret credential material by nature. They require the highest confidentiality class because their value depends on non-disclosure.
+- Integrity (Y): Cryptographic keys are trust anchors for backend authentication, encrypted storage, pairing, and update validation. Their values and provenance must remain tamper-proof by design.
+- Availability (Y): The key material is required for authenticated backend communication, remote services, encrypted data access, and update validation. Loss or corruption requires re-provisioning and materially disrupts connected services.
 
 **Interfaces**:
 - Hardware Security Module (HSM) chip (isolated crypto processor within TCU hardware)
@@ -315,12 +315,12 @@ This example demonstrates:
 - How to conduct the user interview systematically using the 12 guided questions
 - How to translate user answers into structured asset entries with all 7 required fields
 - How to document Evidence & Confidence for traceable, non-fabricated asset entries
-- How to assess CIA ratings based on impact analysis (safety, privacy, regulatory compliance)
+- How to assess CIA properties based on impact analysis (safety, privacy, regulatory compliance)
 - How to map interfaces and relationships between assets
 - How asset categories align with system architecture (ECU, Sensor, Communication, Data)
 
 **Common patterns**:
 - **Wireless interfaces** (Bluetooth, Wi-Fi, Cellular) are always Communication assets with external attack surface
-- **ECUs with external connectivity** have high Integrity and Availability ratings due to safety/security criticality
-- **Cryptographic keys** are always Data assets with Severe (4) CIA ratings
-- **Sensors** used for safety functions (GPS for eCall) have Major+ Availability ratings
+- **ECUs with external connectivity** commonly require Integrity and Availability protection because they mediate trusted services
+- **Cryptographic keys** are Data-at-rest assets requiring Confidentiality and Integrity protection
+- **Sensors** used for required functions (GPS for eCall) require Availability protection

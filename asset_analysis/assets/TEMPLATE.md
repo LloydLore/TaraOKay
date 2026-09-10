@@ -70,19 +70,19 @@ Use this template to document each asset. Copy this structure and fill in all 7 
   - Integrated modem/radio not modeled separately → include under its ECU asset
 -->
 
-**CIA Rating**: C:X / I:X / A:X
-- Confidentiality ([Negligible | Moderate | Major | Severe]): [Intrinsic data sensitivity — how sensitive is this data class by nature? Do NOT reason about specific attack outcomes here; that belongs in damage_scenario / SFOP.]
-- Integrity ([Negligible | Moderate | Major | Severe]): [Intrinsic trust-criticality — how tamper-proof must this asset be by nature? Informational vs operational vs important vs safety-grade.]
-- Availability ([Negligible | Moderate | Major | Severe]): [Intrinsic time-criticality — optional vs convenience vs important vs continuous-required.]
+**CIA Property**: C:Y / I:Y / A:N
+- Confidentiality (Y): [Does unauthorized disclosure require protection?]
+- Integrity (Y): [Does unauthorized modification require protection?]
+- Availability (N): [Does loss or interruption require protection?]
 
 <!--
   CIA is INTRINSIC SENSITIVITY only. See references/asset-schema.md §5 for the
-  full 4-level scale, the C/I/A definitions, and the rule against pre-computing
+  Boolean C/I/A definitions and the rule against pre-computing
   SFOP severity in this field.
 
   Optional extra properties (authenticity, non-repudiation) — see
   references/asset-schema.md §5 "Other security properties". Add them as
-  separate bullets; never fold into the C:X / I:X / A:X line.
+  separate bullets; never fold them into the Boolean C:Y / I:Y / A:N line.
 -->
 
 **Interfaces**:
@@ -139,8 +139,8 @@ Before finalizing this asset entry, verify:
 - [ ] Asset Name is clear and descriptive (not generic)
 - [ ] Description has at least 3 complete sentences
 - [ ] Category is one of the 7 defined categories
-- [ ] CIA Rating has all three dimensions (C, I, A) with numeric values (1-4)
-- [ ] CIA Rating includes justification for each dimension
+- [ ] CIA Property has all three dimensions (C, I, A) with Y/N values
+- [ ] CIA Property includes a matching justification for each dimension
 - [ ] Interfaces lists ALL connection points (internal and external)
 - [ ] Related Systems identifies both dependencies and dependents
 - [ ] No placeholder text remains ([TODO], [TBD], etc.)
@@ -162,10 +162,10 @@ Before finalizing this asset entry, verify:
 
 **Category**: ECU
 
-**CIA Rating**: C:2 / I:4 / A:4
-- Confidentiality (Moderate): Engine ECU data includes fuel consumption, engine RPM, vehicle speed, and diagnostic codes. While not highly privacy-sensitive (no user identity data), it could reveal driving behavior for insurance or legal purposes. Impact is moderate.
-- Integrity (Severe): Tampering with Engine ECU firmware or CAN messages could cause unintended acceleration (forged throttle commands), engine stall (fuel cutoff), or emissions non-compliance (disabling catalytic converter). Safety impact is severe - unintended acceleration could cause crashes and fatalities.
-- Availability (Severe): If the Engine ECU becomes unavailable (crash, denial-of-service, power loss), the vehicle cannot start or the engine will immediately shut down. This disables the vehicle and could create safety hazards (stalling in traffic). Availability is critical for basic vehicle operation.
+**CIA Property**: C:N / I:Y / A:Y
+- Confidentiality (N): The operational signals are not intrinsically restricted data.
+- Integrity (Y): The ECU function and its commands require protection against unauthorized modification.
+- Availability (Y): The ECU function requires protection against interruption during vehicle operation.
 
 **Interfaces**:
 - Powertrain CAN-FD bus (500 kbps / 2 Mbps, connection to Transmission ECU, Battery Management, Central Gateway)

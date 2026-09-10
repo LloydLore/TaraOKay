@@ -11,7 +11,7 @@ Use this after drafting assets and before handing off to downstream TARA steps.
 Validates:
 - Asset ID format and duplicates
 - Required section structure
-- CIA rating format
+- Boolean CIA property format
 - Placeholder leakage
 - Basic category consistency
 
@@ -43,11 +43,11 @@ grep -q '^## Asset Summary by Category' "$FILE" && echo "✓ category summary"
 grep -q '^## Asset Catalogue' "$FILE" && echo "✓ asset catalogue"
 
 echo "[3/7] Check asset header format and count"
-ASSET_COUNT=$(grep -cE '^### AST-(ECU|GW|SNS|ACT|COM|DAT|IFC)-[0-9]{3}:?' "$FILE")
+ASSET_COUNT=$(grep -cE '^### AST-(HW|SW|FW|DAR|DIT|DIU)-[0-9]{3}:?' "$FILE")
 echo "✓ asset headers: $ASSET_COUNT"
 
 echo "[4/7] Check duplicate Asset IDs (must be empty)"
-DUP_IDS=$(grep -oE 'AST-(ECU|GW|SNS|ACT|COM|DAT|IFC)-[0-9]{3}' "$FILE" | sort | uniq -d || true)
+DUP_IDS=$(grep -oE 'AST-(HW|SW|FW|DAR|DIT|DIU)-[0-9]{3}' "$FILE" | sort | uniq -d || true)
 if [ -n "$DUP_IDS" ]; then
   echo "✗ duplicate IDs found:"
   echo "$DUP_IDS"
@@ -57,17 +57,25 @@ else
 fi
 
 echo "[5/7] Check CIA format presence and per-bullet justification"
-# 5a. Compact CIA line must exist for every asset header
-CIA_LINES=$(grep -cE '^(\*\*)?CIA Rating(\*\*)?:\s*C:[1-4]\s*/\s*I:[1-4]\s*/\s*A:[1-4]' "$FILE")
+# 5a. Compact Boolean CIA property line must exist for every asset header
+CIA_LINES=$(grep -cE '^\*\*CIA Property\*\*:\s*C:[YN]\s*/\s*I:[YN]\s*/\s*A:[YN]$' "$FILE")
 if [ "$CIA_LINES" -ne "$ASSET_COUNT" ]; then
-  echo "✗ CIA Rating lines ($CIA_LINES) != asset headers ($ASSET_COUNT)"
+  echo "✗ CIA Property lines ($CIA_LINES) != asset headers ($ASSET_COUNT)"
   exit 1
 fi
-echo "✓ CIA Rating lines: $CIA_LINES (matches asset count)"
+echo "✓ CIA Property lines: $CIA_LINES (matches asset count)"
 
-# 5b. Each CIA dimension bullet must have non-empty justification text after the colon.
-#     Pattern enforces: "- <Dim> (<Severity>): <at least one non-space char>"
-EMPTY_BULLETS=$(grep -nE '^- (Confidentiality|Integrity|Availability)[^:]*:\s*$' "$FILE" || true)
+# 5b. Legacy numeric rating vocabulary must not appear in generated output
+LEGACY_CIA=$(grep -nE 'CIA Rating|C:[1-4]|I:[1-4]|A:[1-4]' "$FILE" || true)
+if [ -n "$LEGACY_CIA" ]; then
+  echo "✗ legacy numeric CIA rating content found:"
+  echo "$LEGACY_CIA"
+  exit 1
+fi
+echo "✓ no legacy numeric CIA rating content"
+
+# 5c. Each CIA dimension bullet must have non-empty justification text and Y/N labels.
+EMPTY_BULLETS=$(grep -nE '^- (Confidentiality|Integrity|Availability) \([YN]\):\s*$' "$FILE" || true)
 if [ -n "$EMPTY_BULLETS" ]; then
   echo "✗ CIA justification bullets with empty body found:"
   echo "$EMPTY_BULLETS"
@@ -75,7 +83,7 @@ if [ -n "$EMPTY_BULLETS" ]; then
 fi
 echo "✓ all CIA justification bullets have non-empty bodies"
 
-# 5c. Evidence & Confidence is recommended for every asset. Warn only.
+# 5d. Evidence & Confidence is recommended for every asset. Warn only.
 EVIDENCE_LINES=$(grep -cE '^(\*\*)?Evidence & Confidence(\*\*)?:' "$FILE" || true)
 if [ "$EVIDENCE_LINES" -ne "$ASSET_COUNT" ]; then
   echo "⚠ Evidence & Confidence blocks ($EVIDENCE_LINES) != asset headers ($ASSET_COUNT)"
@@ -95,10 +103,10 @@ else
 fi
 
 echo "[7/7] Check category labels in summary table"
-for CAT in ECU Gateway Sensor Actuator Communication Data Interface; do
+for CAT in Hardware Software Firmware Data-at-rest Data-in-transit Data-in-use; do
   grep -q "| $CAT |" "$FILE" || { echo "✗ missing category row: $CAT"; exit 1; }
 done
-echo "✓ all 7 category rows found"
+echo "✓ all 6 category rows found"
 
 echo "All validation checks passed."
 ```
@@ -127,7 +135,7 @@ echo "All validation checks passed."
   - Fix by assigning a new unused ID; do not renumber existing published IDs.
 
 - **Missing CIA format**
-  - Ensure every asset has `C:X / I:X / A:X` with values in 1-4.
+  - Ensure every asset has `C:Y / I:Y / A:N` with Boolean Y/N values.
 
 - **Placeholder leakage**
   - Replace all TODO/TBD/template tokens before handoff.

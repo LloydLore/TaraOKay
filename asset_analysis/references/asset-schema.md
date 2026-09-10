@@ -144,51 +144,42 @@ making it a high-value target for cyber attacks.
 
 ---
 
-### 5. CIA Rating (Intrinsic Sensitivity)
+### 5. CIA Property (Intrinsic Sensitivity)
 
 **Purpose**: Captures the asset's **intrinsic security sensitivity** — a static property of the asset itself (how sensitive / how trust-critical / how time-critical the data or function is *by nature*). This is **not** a forecast of the damage a compromise causes; that belongs to the downstream `damage_scenario` skill (SFOP — Safety / Financial / Operational / Privacy, ISO 21434 §15.4). Do not pre-compute SFOP severity here.
 
-**Format**: Confidentiality / Integrity / Availability ratings using a 4-level scale
-
-**Scale**:
-
-| Level | Numeric | Confidentiality (data sensitivity class) | Integrity (trust-criticality) | Availability (time-criticality) |
-| ------- | --------- | ------------------------------------------ | ------------------------------- | --------------------------------- |
-| Negligible | 1 | Public / freely shareable | Informational; tampering is harmless | Optional; can be offline indefinitely |
-| Moderate | 2 | Internal-use; limited sensitivity | Operational; tampering causes degraded UX | Convenience; brief outage tolerable |
-| Major | 3 | Restricted; PII / proprietary | Important; must be authentic for correct function | Important; sustained outage disrupts function |
-| Severe | 4 | Secret; keys / credentials / regulated data | Safety-grade / legally-binding; must be tamper-proof | Continuous-required; must always be up |
-
-**Format**: `C:X / I:X / A:X` where X is the numeric rating (1-4)
+**Format**: Boolean protection properties only: `C:Y / I:Y / A:N`.
+`Y` means the asset requires cybersecurity protection for that property. `N`
+means it does not. Do not use numeric levels or the legacy `CIA Rating` field.
 
 **Example**:
 
-- `C:3 / I:4 / A:2` - PII data, integrity must be tamper-proof, brief outage tolerable
-- `C:1 / I:3 / A:4` - Public data, integrity must be authentic, must be continuously available
+- `C:Y / I:Y / A:Y` - Disclosure, modification, and interruption all require protection
+- `C:N / I:Y / A:Y` - Disclosure does not require protection, but modification and interruption do
 
 **Rules**:
 
-- Rate each dimension (C, I, A) independently based on the asset's **intrinsic** property, not on any specific attack outcome
-- **Confidentiality**: How sensitive is this data by nature?
-- **Integrity**: How trust-critical must this data/function be by nature?
-- **Availability**: How time-critical is continuous availability by nature?
+- Decide each dimension (C, I, A) independently as `Y` or `N` based on the asset's intrinsic protection requirement, not on a specific attack outcome.
+- **Confidentiality**: Does unauthorized disclosure require protection?
+- **Integrity**: Does unauthorized modification require protection?
+- **Availability**: Does loss or interruption require protection?
 - Do **not** reason "if attacker does X, then Y people die" here — that is SFOP/damage analysis
-- Two assets with identical CIA can have very different SFOP downstream depending on context
+- Two assets with identical CIA properties can have very different SFOP downstream depending on context
 
 #### Other security properties (optional, not part of the C/I/A field)
 
-ISO/SAE 21434 explicitly allows additional cybersecurity properties beyond C/I/A when the asset's nature requires them. They are **optional** and, if used, MUST be recorded as a separate annotation under CIA — never folded into the `C:X / I:X / A:X` numbers.
+ISO/SAE 21434 explicitly allows additional cybersecurity properties beyond C/I/A when the asset's nature requires them. They are **optional** and, if used, MUST be recorded as a separate annotation under CIA — never folded into the `C:Y / I:Y / A:N` Boolean property line.
 
 | Property | When to record it | How to record |
 | ---------- | ------------------- | --------------- |
-| **Authenticity** | Asset's value depends on proving *who* produced/sent the data (e.g. signed firmware, signed CAN messages, signed OTA manifests) | Add bullet `- Authenticity: [Negligible \| Moderate \| Major \| Severe] — [why]` under the CIA bullets |
-| **Non-repudiation** | A party must not be able to plausibly deny an action (e.g. diagnostic session logs, tachograph records, regulated event logs) | Add bullet `- Non-repudiation: [Negligible \| Moderate \| Major \| Severe] — [why]` under the CIA bullets |
+| **Authenticity** | Asset's value depends on proving *who* produced/sent the data (e.g. signed firmware, signed CAN messages, signed OTA manifests) | Add bullet `- Authenticity: Y/N — [why]` under the CIA bullets |
+| **Non-repudiation** | A party must not be able to plausibly deny an action (e.g. diagnostic session logs, tachograph records, regulated event logs) | Add bullet `- Non-repudiation: Y/N — [why]` under the CIA bullets |
 | **Authorization / Accountability** | Distinct from integrity (e.g. role-based access enforcement on diagnostic services UDS 0x27/0x29) | Same pattern; one bullet per property |
 
 **Rules**:
 
-- Do NOT mutate the `C:X / I:X / A:X` line — the validation regex (`references/validation.md` step [5/7]) only matches three dimensions and downstream tools depend on it.
-- These extra properties are **descriptive**, not part of the canonical CIA score. Downstream `damage_scenario` reads CIA + free-text justification, so put authenticity/non-repudiation reasoning in the justification bullets where it will be picked up.
+- Do NOT mutate the `C:Y / I:Y / A:N` line — the validation regex (`references/validation.md`) matches the Boolean property format.
+- These extra properties are **descriptive**, not part of the canonical CIA property line. Downstream `damage_scenario` reads CIA + free-text justification, so put authenticity/non-repudiation reasoning in the justification bullets where it will be picked up.
 - If you find yourself repeatedly needing a 4th dimension across many assets, raise it as a project-level decision instead of silently extending the schema.
 
 ---
@@ -289,36 +280,30 @@ Information stored or transmitted by vehicle systems. Examples: Calibration data
 
 ---
 
-## CIA Rating Guidelines
+## CIA Property Guidelines
 
 > **Reminder**: CIA here = **intrinsic sensitivity** of the asset. Damage-of-compromise (SFOP) is downstream in `damage_scenario`. Frame each question as "what kind of asset is this", not "what bad thing happens".
 
 ### Confidentiality Assessment
 
-Ask: "How sensitive is this data **by its nature**?"
+Ask: "Does unauthorized disclosure require cybersecurity protection?"
 
-- **Negligible (1)**: Public information or non-sensitive operational data
-- **Moderate (2)**: Internal vehicle data; limited sensitivity
-- **Major (3)**: Personal user data, location history, or proprietary calibration data (PII / restricted)
-- **Severe (4)**: Cryptographic keys, authentication credentials, or regulated highly-sensitive data
+- **Y**: The asset contains private, proprietary, credential, regulated, or otherwise restricted information.
+- **N**: The asset can be freely disclosed without a relevant cybersecurity consequence.
 
 ### Integrity Assessment
 
-Ask: "How trust-critical must this data/function be **by its nature** — what level of authenticity does it inherently demand?"
+Ask: "Does unauthorized modification require cybersecurity protection?"
 
-- **Negligible (1)**: Informational only; tampering is harmless
-- **Moderate (2)**: Operational data; tampering causes degraded UX
-- **Major (3)**: Important functions that must be authentic to behave correctly
-- **Severe (4)**: Safety-grade or legally-binding data/function; must be tamper-proof by design
+- **Y**: The asset must remain correct, authentic, authorized, or trustworthy for its function.
+- **N**: Arbitrary modification has no relevant cybersecurity consequence.
 
 ### Availability Assessment
 
-Ask: "How time-critical is continuous availability **by its nature**?"
+Ask: "Does loss or interruption require cybersecurity protection?"
 
-- **Negligible (1)**: Optional; can be offline indefinitely
-- **Moderate (2)**: Convenience features; brief outage tolerable
-- **Major (3)**: Important functions; sustained outage disrupts the system
-- **Severe (4)**: Continuous-required by design or by regulation (e.g., eCall)
+- **Y**: Loss or interruption would impair a security-relevant, operational, safety-relevant, or required vehicle function.
+- **N**: The asset can be unavailable without a relevant consequence.
 
 ---
 
@@ -333,10 +318,10 @@ Ask: "How time-critical is continuous availability **by its nature**?"
 
 **Category**: HW
 
-**CIA Rating**: C:3 / I:4 / A:3
-- Confidentiality (Major): Contains user location data, personal contacts, and vehicle usage patterns
-- Integrity (Severe): Tampering could enable unauthorized OTA updates or disable security features
-- Availability (Major): Loss of eCall functionality impacts legal compliance; loss of OTA impacts security patch delivery
+**CIA Property**: C:Y / I:Y / A:Y
+- Confidentiality (Y): Contains user location data, personal contacts, and vehicle usage patterns.
+- Integrity (Y): Unauthorized modification could enable unauthorized OTA updates or disable security features.
+- Availability (Y): Loss of eCall or OTA service requires protection because it impairs required vehicle services.
 
 **Interfaces**:
 - CAN-FD powertrain bus (connection to Engine ECU, Transmission ECU, Gateway)
@@ -364,7 +349,7 @@ Ask: "How time-critical is continuous availability **by its nature**?"
 | Asset Name | Human-readable text | Telematics Control Unit (TCU) |
 | Description | 3+ sentences | The TCU manages all wireless... |
 | Category | HW \| SW \| HW \| DAR \| DIT \| DIU \|
-| CIA Rating | C:X / I:X / A:X (1-4 scale) | C:3 / I:4 / A:3 |
+| CIA Property | C:Y / I:Y / A:N (Boolean only) | C:Y / I:Y / A:N |
 | Interfaces | List of connections | CAN-FD bus, Cellular LTE, Bluetooth... |
 | Related Systems | Dependencies & relationships | Depends on Central Gateway... |
 
@@ -379,8 +364,8 @@ Before finalizing an asset entry, verify:
 - [ ] Asset Name is clear and descriptive
 - [ ] Description has at least 3 complete sentences
 - [ ] Category is one of the 6 defined categories
-- [ ] CIA Rating has all three dimensions (C, I, A) with values 1-4
-- [ ] CIA Rating justification is documented
+- [ ] CIA Property has all three dimensions (C, I, A) with Yes or No. 
+- [ ] CIA Property justification is documented
 - [ ] Interfaces lists ALL connection points (internal and external)
 - [ ] Related Systems identifies dependencies and dependents
 - [ ] Related Systems identifies component containment or explicitly marks it unknown

@@ -9,6 +9,28 @@ description: >-
 ---
 # Asset Analysis -- Skill Workflow
 
+## Normative CIA Property Rule
+
+The output MUST assess each CIA dimension as a Boolean cybersecurity property,
+not as a numeric severity rating:
+
+- `Y` means the asset requires protection for that property.
+- `N` means the asset does not require protection for that property.
+
+The only valid output format is `C:Y / I:Y / A:N` with `Y` or `N` in each
+position. Do not output `CIA Rating`, numeric values, or 1-4 severity levels.
+The old numeric rating convention is obsolete and MUST NOT appear in analysis,
+examples, templates, validation, or generated asset lists.
+
+For every asset, answer these three questions independently:
+
+- **Confidentiality**: Does unauthorized disclosure require protection?
+- **Integrity**: Does unauthorized modification require protection?
+- **Availability**: Does loss or interruption require protection?
+
+Write one justification for each Y/N decision. A Y/N property decision is not
+an SFOP impact score; damage severity remains in `damage_scenario`.
+
 ## 0. Sibling Skill Routing (TARA Workflow Boundary)
 
 This skill is **one node** in the ISO 21434 TARA pipeline. Do NOT cross into siblings' territory:
@@ -148,7 +170,7 @@ For each identified asset, fill in ALL 7 required fields (see `references/asset-
 2. **Asset Name** - Human-readable name
 3. **Description** - Detailed explanation (minimum 3 sentences)
 4. **Category** - One of the 7 vehicle system categories
-5. **CIA Rating** - Confidentiality/Integrity/Availability on 1-4 scale
+5. **CIA Property** - Confidentiality/Integrity/Availability on Yes/No option. 
 6. **Interfaces** - All connections and communication channels
 7. **Related Systems** - Dependencies and relationships
 
@@ -241,15 +263,21 @@ Use the canonical name/code mapping (English labels are normative — do **not**
 
 Use `assets/TEMPLATE.md` as a starting point for each asset.
 
-### Step 5: Assess CIA Ratings (Intrinsic Sensitivity)
-For each asset, rate the **intrinsic security sensitivity** of the asset itself — a static property of the data/function, not a forecast of damage. Scale 1-4 (1=Negligible, 2=Moderate, 3=Major, 4=Severe):
-- **Confidentiality (C)**: How sensitive is this data by nature? (public → secret credentials/keys)
-- **Integrity (I)**: How trustworthy must this data/function be by nature? (informational → safety-grade)
-- **Availability (A)**: How time-critical is this asset's continuous availability by nature? (optional → must-be-up)
+### Step 5: Assess CIA Property (Boolean protection requirement)
+For each asset, decide whether each property requires cybersecurity protection.
+Use only `Y` or `N`; do not assign a numeric level.
 
-**Important — do not double-rate**: CIA here captures the asset's *intrinsic sensitivity*. The **impact of compromise** (Safety / Financial / Operational / Privacy = SFOP, ISO 21434 §15.4) is assessed downstream in the `damage_scenario` skill. Do not pre-compute SFOP severity here, and do not let "what bad thing happens" reasoning drive the CIA number.
+- **Confidentiality (C)**: `Y` if unauthorized disclosure requires protection; `N` only if disclosure has no relevant cybersecurity, privacy, legal, operational, or trust consequence.
+- **Integrity (I)**: `Y` if unauthorized modification requires protection; `N` only if arbitrary modification has no relevant cybersecurity consequence.
+- **Availability (A)**: `Y` if loss or interruption requires protection; `N` only if the asset can be unavailable without a relevant security, operational, safety, or required-function consequence.
 
-See `references/asset-schema.md` for detailed CIA rating guidelines.
+Write the result as `**CIA Property**: C:Y / I:Y / A:N`, followed by one
+justification for each dimension using the same Y/N value. CIA is a Boolean
+protection requirement, not an SFOP impact score. The **impact of compromise**
+(Safety / Financial / Operational / Privacy = SFOP, ISO 21434 §15.4) is
+assessed downstream in `damage_scenario`; do not pre-compute it here.
+
+See `references/asset-schema.md` for detailed CIA Property guidelines.
 
 ### Step 6: Map Relationships
 For each asset, identify:
@@ -263,7 +291,7 @@ Write all documented assets to `data/asset_list.md` using the format specified i
 Ensure:
 - Each asset has all 7 required fields
 - Asset IDs are unique and stable (do not renumber existing IDs)
-- CIA ratings are justified
+- CIA properties are justified
 - Cross-references to related assets use Asset IDs
 
 ### Step 8: Validate
@@ -282,10 +310,13 @@ grep -cE '^### AST-(HW|SW|FW|DAR|DIT|DIU)-[0-9]{3}:' data/asset_list.md
 # 2) Duplicate Asset IDs (should be empty)
 grep -oE 'AST-(HW|SW|FW|DAR|DIT|DIU)-[0-9]{3}' data/asset_list.md | sort | uniq -d
 
-# 3) CIA format presence
-grep -qE 'C:[1-4]\s*/\s*I:[1-4]\s*/\s*A:[1-4]' data/asset_list.md
+# 3) CIA property format presence
+grep -qE '^\*\*CIA Property\*\*: C:[YN] / I:[YN] / A:[YN]$' data/asset_list.md
 
-# 4) Placeholder detection (should be empty)
+# 4) Reject legacy numeric rating vocabulary
+! grep -qE 'CIA Rating|C:[1-4]|I:[1-4]|A:[1-4]' data/asset_list.md
+
+# 5) Placeholder detection (should be empty)
 grep -nE '\[(TODO|TBD)\]|\{\{[A-Z_]+\}\}' data/asset_list.md
 ```
 
@@ -353,7 +384,7 @@ Use these questions to interview the user and extract asset information:
 
 12. **Are there any regulatory or compliance requirements?**
     - UN R155 (cybersecurity), UN R156 (OTA updates), GDPR (privacy)?
-    - These may influence CIA ratings and asset criticality
+    - These may influence CIA property and asset criticality
 
 ---
 
@@ -399,10 +430,10 @@ The output file `data/asset_list.md` should follow this structure:
 
 **Category**: HW
 
-**CIA Rating**: C:X / I:X / A:X
-- Confidentiality (Level): [Justification]
-- Integrity (Level): [Justification]
-- Availability (Level): [Justification]
+**CIA Property**: C:Y / I:Y / A:N
+- Confidentiality (Y): [Justification]
+- Integrity (Y): [Justification]
+- Availability (N): [Justification]
 
 **Interfaces**:
 - [List all connections, protocols, and data flows]
@@ -442,7 +473,7 @@ The output file `data/asset_list.md` should follow this structure:
 - Each asset is a level-3 header (###) with its Asset ID and name
 - Maintain consistent field order for all assets
 - Use bullet lists for interfaces and related systems
-- Include justification for each CIA rating dimension
+- Include justification for each CIA property dimension
 - Keep it human-readable and easy to navigate
 
 ---
@@ -453,7 +484,7 @@ MUST NOT:
 - **Invent or fabricate asset information** -- All asset data must come from user input, reference documents, or explicit analysis. Do not make up technical details.
 - **Add asset categories beyond the 6 defined** -- Only use: ECU, Gateway, Sensor, Actuator, Communication, Data, Interface. Do not create custom categories.
 - **Skip item definition** -- The item/TOE, vehicle-level function(s), and constituent components must be recorded before asset entries.
-- **Assign CIA ratings without justification** -- Every CIA rating must be based on explicit impact analysis. Document the reasoning.
+- **Assign CIA property without justification** -- Every CIA property must be based on explicit impact analysis. Document the reasoning.
 - **Hide uncertainty** -- If evidence is missing, explicitly record Unknown/Assumption instead of guessing.
 - **Create files outside `skills/` and `data/` directories** -- Keep project structure clean. Output goes to `data/asset_list.md` only.
 - **Auto-execute analysis or fabricate asset data** -- This is a runbook skill. It guides the user through interview-driven asset identification; it must not generate assets without evidence. Static validation tooling (regex/lint shell snippets, e.g. `references/validation.md`) is allowed and encouraged. LLM-driven asset fabrication is forbidden.
@@ -467,13 +498,13 @@ MUST NOT:
 
 | File                                           | Contents                                                                                                       |
 |------------------------------------------------|----------------------------------------------------------------------------------------------------------------|
-| `references/asset-schema.md`                   | Complete specification of 7 required fields, CIA rating guidelines, category definitions, validation checklist |
+| `references/asset-schema.md`                   | Complete specification of 7 required fields, CIA property guidelines, category definitions, validation checklist |
 | `references/validation.md`                     | End-to-end validation flow for `data/asset_list.md` (format, completeness, consistency, placeholders)          |
 | `references/examples/example-01-telematics.md` | Example scenario: Telematics Control Unit analysis with sample interview Q&A and expected output               |
 | `references/examples/example-02-gateway.md`    | Example scenario: Central Gateway ECU analysis showing multiple related assets                                 |
 | `assets/TEMPLATE.md`                           | Blank 7-field asset template ready to copy-paste for new assets                                                |
 
-For detailed field specifications, CIA rating scales, and category definitions, see `references/asset-schema.md`.
+For detailed field specifications, Boolean CIA property rules, and category definitions, see `references/asset-schema.md`.
 
 For practical examples of how to apply this workflow, see the example scenarios in `references/examples/`.
 
@@ -496,6 +527,6 @@ The output of this skill (`data/asset_list.md`) serves as input for subsequent T
 **Key ISO 21434 principles applied here**:
 - Assets are items of value that require protection
 - Assets include hardware, software, data, and interfaces
-- CIA (Confidentiality, Integrity, Availability) ratings capture the impact of asset compromise
+- CIA (Confidentiality, Integrity, Availability) property capture the impact of asset compromise
 - Asset identification considers the entire vehicle system, not just individual components
 - Traceability: each asset should be traceable to system requirements or architecture documentation

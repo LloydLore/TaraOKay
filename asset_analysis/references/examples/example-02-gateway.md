@@ -139,10 +139,10 @@ Based on the interview above, the asset analysis would produce entries like thes
 
 **Category**: Gateway
 
-**CIA Rating**: C:4 / I:4 / A:4
-- Confidentiality (Severe): The Gateway can observe cross-domain vehicle traffic, including safety-related messages, powertrain state, diagnostic records, and user-related telemetry routed from connected domains. This breadth of visibility makes its data exposure class highly sensitive by nature.
-- Integrity (Severe): The Gateway enforces firewall rules and routes messages between safety-critical and non-safety networks. Its firmware, routing tables, and filtering policy are safety-grade trust anchors and must remain tamper-proof by design.
-- Availability (Severe): The Gateway is a continuously required network coordination point for multiple in-vehicle domains. Its routing and isolation functions must remain available for normal cross-domain communication and network segmentation.
+**CIA Property**: C:Y / I:Y / A:Y
+- Confidentiality (Y): The Gateway can observe cross-domain vehicle traffic, including safety-related messages, powertrain state, diagnostic records, and user-related telemetry routed from connected domains. This breadth of visibility makes its data exposure class highly sensitive by nature.
+- Integrity (Y): The Gateway enforces firewall rules and routes messages between safety-critical and non-safety networks. Its firmware, routing tables, and filtering policy are safety-grade trust anchors and must remain tamper-proof by design.
+- Availability (Y): The Gateway is a continuously required network coordination point for multiple in-vehicle domains. Its routing and isolation functions must remain available for normal cross-domain communication and network segmentation.
 
 **Interfaces**:
 - Powertrain CAN-FD bus (500 kbps/2 Mbps, connection to Engine ECU, Transmission ECU, Battery Management System)
@@ -172,10 +172,10 @@ Based on the interview above, the asset analysis would produce entries like thes
 
 **Category**: Communication
 
-**CIA Rating**: C:2 / I:4 / A:4
-- Confidentiality (Moderate): Powertrain CAN messages include vehicle speed, engine RPM, battery charge level, fuel-consumption, and driving-behavior signals. These are internal operational data with limited privacy sensitivity compared with location history or credentials.
-- Integrity (Severe): The Powertrain CAN bus carries powertrain coordination messages such as throttle, fuel, torque, and battery-management signals. These are safety-grade operational signals whose authenticity and ordering must be preserved.
-- Availability (Severe): The Powertrain CAN bus is a continuously required communication channel for propulsion and energy-management coordination. Its availability is intrinsic to normal powertrain operation.
+**CIA Property**: C:Y / I:Y / A:Y
+- Confidentiality (Y): Powertrain CAN messages include vehicle speed, engine RPM, battery charge level, fuel-consumption, and driving-behavior signals. These are internal operational data with limited privacy sensitivity compared with location history or credentials.
+- Integrity (Y): The Powertrain CAN bus carries powertrain coordination messages such as throttle, fuel, torque, and battery-management signals. These are safety-grade operational signals whose authenticity and ordering must be preserved.
+- Availability (Y): The Powertrain CAN bus is a continuously required communication channel for propulsion and energy-management coordination. Its availability is intrinsic to normal powertrain operation.
 
 **Interfaces**:
 - Central Gateway (CAN-FD transceiver, routes messages to/from other network segments)
@@ -198,10 +198,10 @@ Based on the interview above, the asset analysis would produce entries like thes
 
 **Category**: Communication
 
-**CIA Rating**: C:2 / I:4 / A:4
-- Confidentiality (Moderate): Chassis CAN messages include vehicle speed, steering angle, brake pressure, wheel speeds, and yaw-rate data. These operational signals have limited privacy sensitivity and are primarily internal vehicle data.
-- Integrity (Severe): The Chassis CAN bus carries braking, steering, ABS, and stability-control messages. These are safety-grade vehicle-dynamics signals whose authenticity and ordering must be preserved end-to-end.
-- Availability (Severe): The Chassis CAN bus is a continuously required communication channel for active safety and vehicle-dynamics coordination. Its availability is intrinsic to normal chassis-domain operation.
+**CIA Property**: C:Y / I:Y / A:Y
+- Confidentiality (Y): Chassis CAN messages include vehicle speed, steering angle, brake pressure, wheel speeds, and yaw-rate data. These operational signals have limited privacy sensitivity and are primarily internal vehicle data.
+- Integrity (Y): The Chassis CAN bus carries braking, steering, ABS, and stability-control messages. These are safety-grade vehicle-dynamics signals whose authenticity and ordering must be preserved end-to-end.
+- Availability (Y): The Chassis CAN bus is a continuously required communication channel for active safety and vehicle-dynamics coordination. Its availability is intrinsic to normal chassis-domain operation.
 
 **Interfaces**:
 - Central Gateway (CAN transceiver, routes messages to/from other network segments, enforces firewall rules)
@@ -225,10 +225,10 @@ Based on the interview above, the asset analysis would produce entries like thes
 
 **Category**: Communication
 
-**CIA Rating**: C:1 / I:2 / A:1
-- Confidentiality (Negligible): Body/Comfort LIN messages contain only door lock status, window positions, seat positions, and light states. This information is not privacy-sensitive and has negligible value to attackers.
-- Integrity (Moderate): Body/Comfort LIN carries convenience-control commands and status signals for doors, windows, seats, lighting, and climate actuators. These signals require operational integrity but are not safety-grade.
-- Availability (Negligible): Body/Comfort LIN supports convenience features whose continuous availability is not required for core vehicle operation. Temporary or sustained outage is tolerable from the asset's intrinsic time-criticality perspective.
+**CIA Property**: C:N / I:Y / A:N
+- Confidentiality (N): Body/Comfort LIN messages contain door lock status, window positions, seat positions, and light states. These signals are not treated as restricted data in this analysis.
+- Integrity (Y): Body/Comfort LIN carries convenience-control commands and status signals for doors, windows, seats, lighting, and climate actuators. These signals require operational integrity but are not safety-grade.
+- Availability (N): Body/Comfort LIN supports convenience features whose continuous availability is not required for core vehicle operation. Temporary or sustained outage is tolerable from the asset's intrinsic time-criticality perspective.
 
 **Interfaces**:
 - Central Gateway (LIN master node, sends commands and polls slave nodes)
@@ -253,10 +253,10 @@ Based on the interview above, the asset analysis would produce entries like thes
 
 **Category**: Communication
 
-**CIA Rating**: C:3 / I:3 / A:2
-- Confidentiality (Major): The Infotainment Ethernet carries restricted user and vehicle data such as contacts, call history, location-derived data, multimedia traffic, and telemetry. The data class is privacy-sensitive by nature.
-- Integrity (Major): The Infotainment Ethernet carries user-facing application traffic, telemetry, update-support traffic, and gateway-routed messages. Its data should be authentic and correctly segmented, but the network itself is not the final authority for safety-grade vehicle control.
-- Availability (Moderate): The Infotainment Ethernet supports connectivity, media, navigation, rear-seat display, and update-support paths. These services are important but not continuously required for basic vehicle operation.
+**CIA Property**: C:Y / I:Y / A:Y
+- Confidentiality (Y): The Infotainment Ethernet carries restricted user and vehicle data such as contacts, call history, location-derived data, multimedia traffic, and telemetry. The data class is privacy-sensitive by nature.
+- Integrity (Y): The Infotainment Ethernet carries user-facing application traffic, telemetry, update-support traffic, and gateway-routed messages. Its data should be authentic and correctly segmented, but the network itself is not the final authority for safety-grade vehicle control.
+- Availability (Y): The Infotainment Ethernet supports connectivity, media, navigation, rear-seat display, and update-support paths. These services are important but not continuously required for basic vehicle operation.
 
 **Interfaces**:
 - Central Gateway (Ethernet switch port, routes packets to/from other network segments, enforces firewall rules)
@@ -279,10 +279,10 @@ Based on the interview above, the asset analysis would produce entries like thes
 
 **Category**: Communication
 
-**CIA Rating**: C:2 / I:4 / A:4
-- Confidentiality (Moderate): ADAS FlexRay messages include camera image data (potentially capturing faces of pedestrians or license plates), radar/lidar point clouds (revealing surroundings), and vehicle trajectory predictions. While not directly user-identifiable data, privacy concerns exist. Confidentiality impact is moderate since the network is isolated and requires Gateway compromise to eavesdrop.
-- Integrity (Severe): The ADAS FlexRay bus carries object-detection, trajectory, timing, and control-request messages. These are safety-grade ADAS signals whose authenticity, ordering, and timing must be guaranteed.
-- Availability (Severe): The ADAS FlexRay network is a continuously required deterministic communication channel for ADAS sensing and control coordination. Its availability is intrinsic to the ADAS domain's real-time function.
+**CIA Property**: C:Y / I:Y / A:Y
+- Confidentiality (Y): ADAS FlexRay messages include camera image data, radar/lidar point clouds, and vehicle trajectory predictions. These data require protection because they can reveal occupants, pedestrians, license plates, or surroundings; network isolation does not remove the property requirement.
+- Integrity (Y): The ADAS FlexRay bus carries object-detection, trajectory, timing, and control-request messages. These are safety-grade ADAS signals whose authenticity, ordering, and timing must be guaranteed.
+- Availability (Y): The ADAS FlexRay network is a continuously required deterministic communication channel for ADAS sensing and control coordination. Its availability is intrinsic to the ADAS domain's real-time function.
 
 **Interfaces**:
 - Central Gateway (FlexRay communication controller, routes ADAS commands to Chassis CAN, enforces firewall rules)
@@ -306,10 +306,10 @@ Based on the interview above, the asset analysis would produce entries like thes
 
 **Category**: Data
 
-**CIA Rating**: C:3 / I:4 / A:4
-- Confidentiality (Major): The firewall rules reveal security-boundary design, allowed message identifiers, routing policy, and segmentation assumptions. This configuration data is restricted architecture information by nature.
-- Integrity (Severe): The firewall ruleset is the Gateway's primary security-control configuration. It must remain tamper-proof because its correctness defines the network segmentation boundary.
-- Availability (Severe): The firewall rules and routing tables are required at runtime for deterministic message filtering and forwarding. They are continuously required configuration data for the Gateway's normal operation.
+**CIA Property**: C:Y / I:Y / A:Y
+- Confidentiality (Y): The firewall rules reveal security-boundary design, allowed message identifiers, routing policy, and segmentation assumptions. This configuration data is restricted architecture information by nature.
+- Integrity (Y): The firewall ruleset is the Gateway's primary security-control configuration. It must remain tamper-proof because its correctness defines the network segmentation boundary.
+- Availability (Y): The firewall rules and routing tables are required at runtime for deterministic message filtering and forwarding. They are continuously required configuration data for the Gateway's normal operation.
 
 **Interfaces**:
 - Central Gateway non-volatile flash memory (stores firewall rules and routing tables)
@@ -353,13 +353,13 @@ Based on the interview above, the asset analysis would produce entries like thes
 This example demonstrates:
 - How to handle a **Gateway ECU** that connects multiple network segments
 - How to categorize **network segments** (CAN, Ethernet, LIN, FlexRay) as **Communication** assets
-- How to assess CIA ratings for **network assets** based on the criticality of the systems they connect
+- How to assess CIA properties for **network assets** based on the criticality of the systems they connect
 - How to document **security mechanisms** (firewall rules, MACs) as separate **Data** assets
 - How to document **Evidence & Confidence** to keep asset entries traceable and non-fabricated
 - How multiple assets relate to each other in a networked system (Gateway + 5 networks + firewall rules)
 
 **Key insights**:
-- **Gateways** have severe CIA ratings (4/4/4) because they are single points of failure and control network isolation
+- **Gateways** require protection for confidentiality, integrity, and availability because they are single points of failure and control network isolation
 - **Safety-critical networks** (Chassis, ADAS) have Integrity=4 and Availability=4 regardless of confidentiality
-- **Convenience networks** (Body/Comfort) have low CIA ratings (1/2/1) even though they connect to user commands
-- **Firewall rules** are Data assets with CIA ratings as critical as the Gateway itself (integrity compromise bypasses all network security)
+- **Convenience networks** (Body/Comfort) do not require all three CIA protections even though they connect to user commands
+- **Firewall rules** are Data assets with integrity protection as critical as the Gateway itself (integrity compromise bypasses all network security)
