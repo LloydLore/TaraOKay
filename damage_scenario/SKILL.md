@@ -49,7 +49,7 @@ These rules apply everywhere in this skill -- the workflow steps, validator, and
 
 ### Step 1 -- Read assets
 
-<!--  needs update since asset skill doesn't make ratings for CIA  -->
+<!--  TODO: needs update since asset skill doesn't make ratings for CIA  -->
 Open `data/asset_list.md`. Read the Item Definition section first, then build a working list grouped by highest CIA dimension. Flag everything with C≥3, I≥3, or A≥3 as a triage candidate.
 
 ### Step 2 -- Group by domain
