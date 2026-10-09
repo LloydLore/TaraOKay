@@ -53,6 +53,8 @@ Before enumerating assets, freeze the item boundary. ISO 21434 TARA starts from
 item definition: an item is a component or set of components that implements a
 vehicle-level function.
 
+An explicit relationship between item and asset is the item contains the assets. Only if the assets are protected, the item(vehicle-level function) is well protected. 
+
 Record these at the top of `data/asset_list.md`:
 1. **Item / TOE** — the system, subsystem, or ECU set under analysis.
 2. **Vehicle-Level Function(s)** — functions delivered to road users or stakeholders.
